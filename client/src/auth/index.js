@@ -79,7 +79,7 @@ function AuthContextProvider(props) {
                         user: response.data.user
                     }
                 })
-                history.push("/");
+                history.push("/login");
             },
             (err) => {
                 console.log("Register error\n")

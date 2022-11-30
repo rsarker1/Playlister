@@ -34,7 +34,6 @@ loginUser = async (req, res) => {
     console.log("loginUser");
     try {
         const { email, password } = req.body;
-
         if (!email || !password) {
             return res
                 .status(400)
@@ -96,9 +95,9 @@ logoutUser = async (req, res) => {
 
 registerUser = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, passwordVerify } = req.body;
-        console.log("create user: " + firstName + " " + lastName + " " + email + " " + password + " " + passwordVerify);
-        if (!firstName || !lastName || !email || !password || !passwordVerify) {
+        const { userName, firstName, lastName, email, password, passwordVerify } = req.body;
+        console.log("create user: " + userName + " " + firstName + " " + lastName + " " + email + " " + password + " " + passwordVerify);
+        if (!userName || !firstName || !lastName || !email || !password || !passwordVerify) {
             return res
                 .status(400)
                 .json({ errorMessage: "Please enter all required fields." });
@@ -112,6 +111,7 @@ registerUser = async (req, res) => {
                 });
         }
         console.log("password long enough");
+        console.log(`${password} && ${passwordVerify}`);
         if (password !== passwordVerify) {
             return res
                 .status(400)
@@ -137,30 +137,32 @@ registerUser = async (req, res) => {
         console.log("passwordHash: " + passwordHash);
 
         const newUser = new User({
-            firstName, lastName, email, passwordHash
+            userName, firstName, lastName, email, passwordHash
         });
         const savedUser = await newUser.save();
         console.log("new user saved: " + savedUser._id);
 
         // LOGIN THE USER
-        const token = auth.signToken(savedUser._id);
-        console.log("token:" + token);
+        // const token = auth.signToken(savedUser._id);
+        // console.log("token:" + token);
 
-        await res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none"
-        }).status(200).json({
-            success: true,
-            user: {
-                firstName: savedUser.firstName,
-                lastName: savedUser.lastName,  
-                email: savedUser.email              
-            }
-        })
+        // await res.cookie("token", token, {
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: "none"
+        // }).status(200).json({
+        //     success: true,
+        //     user: {
+        //         firstName: savedUser.firstName,
+        //         lastName: savedUser.lastName,  
+        //         email: savedUser.email              
+        //     }
+        // })
 
-        console.log("token sent");
-
+        // console.log("token sent");
+        return res.status(200).json({
+            success: true
+        });
     } catch (err) {
         console.error(err);
         res.status(500).send();
