@@ -69,8 +69,8 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.registerUser = async function(firstName, lastName, email, password, passwordVerify, setOpen, setMsg) {
-        api.registerUser(firstName, lastName, email, password, passwordVerify)
+    auth.registerUser = async function(userName, firstName, lastName, email, password, passwordVerify, setOpen, setMsg) {
+        api.registerUser(userName, firstName, lastName, email, password, passwordVerify)
         .then(
             (response) => {
                 authReducer({
