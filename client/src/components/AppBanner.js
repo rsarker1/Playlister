@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-import image from "../316 Images/act_logo.png"; 
+import image from "../316 Images/logo.png"; 
 
 export default function AppBanner() {
     const { auth } = useContext(AuthContext);
@@ -92,19 +92,17 @@ export default function AppBanner() {
         else
             return <AccountCircle />;
     }
-
+    // <Link style={{ textDecoration: 'none', color: 'white' }} to='/'>⌂</Link>
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+            <AppBar position="static" sx={{ bgcolor: "#2179b0" }}>
                 <Toolbar>
-                <img src={image} />
                     <Typography                        
-                        variant="h4"
                         noWrap
                         component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}                        
+                        sx={{ display: { marginTop: 10, xs: 'none', sm: 'block' } }}                        
                     >
-                        <Link style={{ textDecoration: 'none', color: 'white' }} to='/'>⌂</Link>
+                        <img src={image} alt="Playlister" id="appbar-logo" />
                     </Typography>
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

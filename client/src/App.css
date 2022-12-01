@@ -265,7 +265,18 @@ span {
   font-weight: bolder;
   font-style: italic;
 }
-
+#appbar-logo {
+  max-width: 10%;
+  height: auto;
+}
+#splash-logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.5rem;
+  max-width: 65%;
+  height: auto;
+}
 
 /* THIS STYLE SHEET MANAGES STYLE FOR OUR MODAL, i.e. DIALOG BOX */
 
