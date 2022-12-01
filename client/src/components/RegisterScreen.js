@@ -32,8 +32,6 @@ export default function RegisterScreen() {
             setOpen,
             setMsg,
         );
-        console.log(auth);
-        console.log(auth.loggedIn);
     };
     // #00FAC8
     // #6DD5ED
