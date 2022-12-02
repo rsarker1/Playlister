@@ -17,7 +17,7 @@ export default function SplashScreen() {
         <Grid container component="main" 
             sx={{ 
                 minWidth: '100%',
-                height: '100vh', 
+                height: '100%', 
                 background: "linear-gradient(to bottom, #2193B0 0%, #6DD5ED 50%, #00FAC8 100%);", 
                 justifyContent: "center" 
             }}

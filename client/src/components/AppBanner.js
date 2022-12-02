@@ -52,8 +52,8 @@ export default function AppBanner() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}><Link to='/login/'>Login</Link></MenuItem>
-            <MenuItem onClick={handleMenuClose}><Link to='/register/'>Create New Account</Link></MenuItem>
+            <MenuItem onClick={handleMenuClose} component={Link} to='/login/'>Login</MenuItem>
+            <MenuItem onClick={handleMenuClose} component={Link} to='/register/'>Create New Account</MenuItem>
         </Menu>
     );
     const loggedInMenu = 
@@ -87,7 +87,7 @@ export default function AppBanner() {
     function getAccountMenu(loggedIn) {
         let userInitials = auth.getUserInitials();
         console.log("userInitials: " + userInitials);
-        if (loggedIn) 
+        if (loggedIn && auth.isGuest !== true) 
             return <div>{userInitials}</div>;
         else
             return <AccountCircle />;
