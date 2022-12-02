@@ -31,11 +31,11 @@ export default function SplashScreen() {
                     height: 'auto'
                 }}
             >
-                <Typography component="h1" variant="h3" align='center' >
+                <Typography component="h1" variant="h3" align='center' fontFamily={'Satisfy'}>
                     Welcome to
                 </Typography>
                 <img src={image} alt="Playlister" id="splash-logo"/>
-                <Typography component="h1" variant="h5" align='center'>
+                <Typography component="h1" variant="h5" align='center' >
                     If you want to create, delete, and edit your music playlists 
                     and share your music taste with other users, this is the perfect app for you.  
                 </Typography>
@@ -43,6 +43,7 @@ export default function SplashScreen() {
                         type="submit"
                         variant="contained"
                         href="/login"
+                        
                         sx={{ ml: 15, mt: 3, mb: 2, height: 'auto', minWidth: '28%', fontSize: '1.0rem', bgcolor: "#2179b0"}}
                     >
                     Login
