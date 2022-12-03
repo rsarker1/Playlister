@@ -12,10 +12,12 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 
 import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import HomeOutlined from '@mui/icons-material/HomeOutlined';
 import GroupsOutlined from '@mui/icons-material/GroupsOutlined';
 import PersonOutlined from '@mui/icons-material/PersonOutlined';
 import TextField from "@mui/material/TextField";
+import Sort from '@mui/icons-material/Sort';
 
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
@@ -66,34 +68,57 @@ const HomeScreen = () => {
                 }
                 <MUIDeleteModal />
             </div> */}
-            <IconButton sx={{ color: "white", mt: 1 }}>
-                <HomeOutlined sx={{ fontSize: "3vmin" }} />
+            {/* sx={{ 
+                                    fontSize: "3.5vmin",  
+                                    "&.Mui-selected": {},
+                                    "&.Mui-focusVisible": {
+                                      border: "3px solid #F2A42A"
+                                    },
+                                    ":hover": {
+                                      border: "3px solid #F2A42A"
+                                    }
+                                }} */}
+            <IconButton sx={{ border: '2px solid transparent', color: "white", mt: "0.2%", ml: "0.8%", ':focus': { borderColor: 'white', border: '2px solid'}, }}>
+                <HomeOutlined sx={{ fontSize: "3.5vmin"}} />
             </IconButton>
-            <IconButton sx={{ color: "white" }}>
-                <GroupsOutlined sx={{ fontSize: "3vmin", mt: 1 }} />
+            <IconButton sx={{ border: '2px solid transparent', color: "white", mt: "0.2%", ':focus': { borderColor: 'white', border: '2px solid',}, }}>
+                <GroupsOutlined sx={{ fontSize: "3.5vmin" }} />
             </IconButton>            
-            <IconButton sx={{ color: "white" }}>
-                <PersonOutlined sx={{ fontSize: "3vmin", mt: 1 }} />
+            <IconButton sx={{ border: '2px solid transparent', color: "white", mt: "0.2%", ':focus': { borderColor: 'white', border: '2px solid',}, }}>
+                <PersonOutlined sx={{ fontSize: "3.5vmin" }} />
             </IconButton>
             <TextField
-                    margin="normal"
-                    id="search"
-                    label="Search"
-                    name="search"
-                    autoComplete="search"
-                    autoFocus
-                    sx={{ 
-                        ml: 10
-                    }}
-                />
+                margin="normal"
+                id="search"
+                label="Search"
+                name="search"
+                autoComplete="search"
+                autoFocus
+                sx={{ 
+                    ml: "25%",
+                    width: "30%",
+                    input: {
+                        background: "white"
+                    }
+                }}
+            />
+            <Typography component="span" sx={{ ml: "30%", fontSize: "1.6vmin", fontWeight: "bold", color: "white"}} >
+                SORT BY
+            </Typography>
+            <IconButton sx={{ color: "white", mb: "0.5%" }}>
+                <Sort sx={{ fontSize: "3.5vmin" }} />
+            </IconButton>
             <Box sx={{
-                    ml: 5,
+                    mt: "0.5%",
+                    ml: "1.5%",
                     flexDirection: 'column',
                     width: '60%',
                     height: '80%',
-                    backgroundColor: 'white'
+                    // backgroundColor: 'white'
                 }}>
-                test
+                {
+                    listCard
+                }
             </Box>
         </Box>
     )

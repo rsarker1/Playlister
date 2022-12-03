@@ -43,7 +43,6 @@ export default function SplashScreen() {
                         type="submit"
                         variant="contained"
                         href="/login"
-                        
                         sx={{ ml: 15, mt: 3, mb: 2, height: 'auto', minWidth: '28%', fontSize: '1.0rem', bgcolor: "#2179b0"}}
                     >
                     Login

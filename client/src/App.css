@@ -255,10 +255,10 @@ input {
   color: var(--swatch-neutral);
 }
 
-span {
+/* span {
   font-weight: bolder;
   font-style: italic;
-}
+} */
 #appbar-logo {
   max-width: 10%;
   height: auto;
