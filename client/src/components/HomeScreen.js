@@ -3,8 +3,7 @@ import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
 
-import AddIcon from '@mui/icons-material/Add';
-import Fab from '@mui/material/Fab'
+import Add from '@mui/icons-material/Add';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box';
@@ -21,8 +20,11 @@ import Sort from '@mui/icons-material/Sort';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
+import AuthContext from '../auth'
+
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     const [hasFocus, setFocus] = useState("home");
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
@@ -46,7 +48,7 @@ const HomeScreen = () => {
     let listCard = "";
     if (store) {
         listCard = 
-            <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
+            <List>
             {
                 store.idNamePairs.map((pair) => (
                     <ListCard
@@ -58,29 +60,30 @@ const HomeScreen = () => {
             }
             </List>;
     }
+
+    // THERE IS MORE TO THIS PART FOR SEARCHES AND GUEST
+    let bottom = ""; 
+    if(!auth.isGuest) {
+        bottom = 
+            <Box sx={{ ml: "48%", mt: "1%", fontSize: "2.8vmin", fontFamily: "", fontWeight: "bold", color: "white" }}>
+                <IconButton 
+                    sx={{ mr: "1%", color: 'white', backgroundColor: '#2179b0', "&:hover": { backgroundColor: '#0032fa' } }} 
+                    aria-label="add"
+                    id="add-list-button"
+                    onClick={handleCreateNewList}
+                >
+                    <Add sx={{ fontSize: "2vmin" }} />
+                </IconButton>
+                Your Lists
+            </Box>;
+    }
+
     return (
         <Box sx={{ 
                 minWidth: '100%',
                 height: "100%", 
                 background: "linear-gradient(to bottom, #2193B0 0%, #6DD5ED 50%, #00FAC8 100%);",
-            }}> 
-            {/* <div id="list-selector-heading">
-            <Fab 
-                color="primary" 
-                aria-label="add"
-                id="add-list-button"
-                onClick={handleCreateNewList}
-            >
-                <AddIcon />
-            </Fab>
-                <Typography variant="h2">Your Lists</Typography>
-            </div>
-            <div id="list-selector-list">
-                {
-                    listCard
-                }
-                <MUIDeleteModal />
-            </div> */}
+        }}> 
             <IconButton onFocus={() => setFocus("home")} onBlur={() => setFocus("")} sx={{ 
                 border: '2px solid transparent', 
                 color: "white", 
@@ -157,19 +160,37 @@ const HomeScreen = () => {
                 <MenuItem onClick={() => console.log("Likes (High - Low)")} sx={{ fontSize: "1.2vmin" }}>Likes (High - Low)</MenuItem>
                 <MenuItem onClick={() => console.log("Dislikes (High - Low)")} sx={{ fontSize: "1.2vmin" }}>Dislikes (High - Low)</MenuItem>
             </Menu>
+            <Box sx={{ display: 'flex', height: '85%', backgroundColor: 'blue' }}>
+                <Box sx={{
+                        ml: "1.5%",
+                        flexDirection: 'column',
+                        flex: 1,
+                        // width: '60%',
+                        // height: '80%',
+                        backgroundColor: 'white',
+                        // overflow: "hidden",
+                        // overflowY: "scroll",
+                    }}>
+                    {
+                        listCard
+                    }
+                </Box>
+                <Box sx={{ width: '40%' }}>
+                    TEST
+                    <Box>
+                        HOLD CONTROLS HERE
+                    </Box>
+                </Box>
+            </Box>
+            {bottom}
 
-            <Box sx={{
-                    mt: "0.5%",
-                    ml: "1.5%",
-                    flexDirection: 'column',
-                    width: '60%',
-                    height: '80%',
-                    // backgroundColor: 'white'
-                }}>
+            {/*
+            <div id="list-selector-list">
                 {
                     listCard
                 }
-            </Box>
+                <MUIDeleteModal />
+            </div> */}
         </Box>
     )
 }
