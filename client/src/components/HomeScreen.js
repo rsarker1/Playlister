@@ -33,6 +33,13 @@ const HomeScreen = () => {
     }, []);
     // No more verify call for guest, which is kinda a good thing?
 
+    function handleMenuOpen(event) {
+        event.stopPropagation();
+        setAnchorEl(event.currentTarget);
+    }
+    function handleMenuClose() {
+        setAnchorEl(null);
+    }
     function handleCreateNewList() {
         store.createNewList();
     }
@@ -74,16 +81,6 @@ const HomeScreen = () => {
                 }
                 <MUIDeleteModal />
             </div> */}
-            {/* sx={{ 
-                                    fontSize: "3.5vmin",  
-                                    "&.Mui-selected": {},
-                                    "&.Mui-focusVisible": {
-                                      border: "3px solid #F2A42A"
-                                    },
-                                    ":hover": {
-                                      border: "3px solid #F2A42A"
-                                    }
-                                }} */}
             <IconButton onFocus={() => setFocus("home")} onBlur={() => setFocus("")} sx={{ 
                 border: '2px solid transparent', 
                 color: "white", 
@@ -122,37 +119,45 @@ const HomeScreen = () => {
                     ml: "25%",
                     width: "30%",
                     input: {
-                        background: "white"
+                        background: "white",
+                        height: "1.4vmin"
                     }
                 }}
             />
-            <Typography component="span" sx={{ ml: "30%", fontSize: "1.6vmin", fontWeight: "bold", color: "white"}} >
+            <Typography component="span" sx={{ ml: "28%", fontSize: "1.6vmin", fontWeight: "bold", color: "white"}} >
                 SORT BY
             </Typography>
-            {/* <Menu
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    id={menuId}
-                    keepMounted
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-                    }}
-                    open={isMenuOpen}
-                    onClose={handleMenuClose}
-                >
-                    <MenuItem onClick={() => sort("Publish Date (Newest)")}>Publish Date (Newest)</MenuItem>
-                    <MenuItem onClick={() => sort("Publish Date (Oldest)")}>Publish Date (Oldest)</MenuItem>
-                    <MenuItem onClick={() => sort("Views")}>Views</MenuItem>
-                    <MenuItem onClick={() => sort("Likes")}>Likes</MenuItem>
-                    <MenuItem onClick={() => sort("Dislikes")}>Dislikes</MenuItem>
-            </Menu> */}
-            <IconButton sx={{ color: "white", mb: "0.5%" }}>
+            <IconButton onClick={handleMenuOpen} sx={{ color: "white", mb: "0.5%" }}>
                 <Sort sx={{ fontSize: "3.5vmin" }} />
             </IconButton>
+            <Menu
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={isMenuOpen}
+                onClose={handleMenuClose}
+                sx={{ width: "20%" }}
+                PaperProps={{  
+                    sx: {  
+                      width: "40%",
+                      height: "auto"  
+                    },  
+                 }} 
+            >
+                <MenuItem onClick={() => console.log("Name (A - Z)")} sx={{ fontSize: "1.2vmin" }}>Name (A - Z)</MenuItem>
+                <MenuItem onClick={() => console.log("Publish Date (Newest)")} sx={{ fontSize: "1.2vmin" }}>Publish Date (Newest)</MenuItem>
+                <MenuItem onClick={() => console.log("Listens (High - Low)")} sx={{ fontSize: "1.2vmin" }}>Listens (High - Low)</MenuItem>
+                <MenuItem onClick={() => console.log("Likes (High - Low)")} sx={{ fontSize: "1.2vmin" }}>Likes (High - Low)</MenuItem>
+                <MenuItem onClick={() => console.log("Dislikes (High - Low)")} sx={{ fontSize: "1.2vmin" }}>Dislikes (High - Low)</MenuItem>
+            </Menu>
+
             <Box sx={{
                     mt: "0.5%",
                     ml: "1.5%",
