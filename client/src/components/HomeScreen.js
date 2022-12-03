@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
@@ -18,14 +18,20 @@ import GroupsOutlined from '@mui/icons-material/GroupsOutlined';
 import PersonOutlined from '@mui/icons-material/PersonOutlined';
 import TextField from "@mui/material/TextField";
 import Sort from '@mui/icons-material/Sort';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
+    const [hasFocus, setFocus] = useState("home");
+    const [anchorEl, setAnchorEl] = useState(null);
+    const isMenuOpen = Boolean(anchorEl);
 
     useEffect(() => {
-        store.closeCurrentList();
-        store.loadIdNamePairs();
+        store.closeCurrentList();  // REMOVE
+        store.loadIdNamePairs(); // REMOVE
     }, []);
+    // No more verify call for guest, which is kinda a good thing?
 
     function handleCreateNewList() {
         store.createNewList();
@@ -78,13 +84,31 @@ const HomeScreen = () => {
                                       border: "3px solid #F2A42A"
                                     }
                                 }} */}
-            <IconButton sx={{ border: '2px solid transparent', color: "white", mt: "0.2%", ml: "0.8%", ':focus': { borderColor: 'white', border: '2px solid'}, }}>
+            <IconButton onFocus={() => setFocus("home")} onBlur={() => setFocus("")} sx={{ 
+                border: '2px solid transparent', 
+                color: "white", 
+                mt: "0.2%", 
+                ml: "0.8%", 
+                borderColor: hasFocus === "home" ? 'white': '', 
+            }}>
                 <HomeOutlined sx={{ fontSize: "3.5vmin"}} />
             </IconButton>
-            <IconButton sx={{ border: '2px solid transparent', color: "white", mt: "0.2%", ':focus': { borderColor: 'white', border: '2px solid',}, }}>
+            <IconButton onFocus={() => setFocus("group")} onBlur={() => setFocus("")} sx={{ 
+                border: '2px solid transparent', 
+                color: "white", 
+                mt: "0.2%", 
+                ml: "0.8%", 
+                borderColor: hasFocus === "group" ? 'white': '', 
+            }}>
                 <GroupsOutlined sx={{ fontSize: "3.5vmin" }} />
             </IconButton>            
-            <IconButton sx={{ border: '2px solid transparent', color: "white", mt: "0.2%", ':focus': { borderColor: 'white', border: '2px solid',}, }}>
+            <IconButton onFocus={() => setFocus("user")} onBlur={() => setFocus("")} sx={{ 
+                border: '2px solid transparent', 
+                color: "white", 
+                mt: "0.2%", 
+                ml: "0.8%", 
+                borderColor: hasFocus === "user" ? 'white': '', 
+            }}>
                 <PersonOutlined sx={{ fontSize: "3.5vmin" }} />
             </IconButton>
             <TextField
@@ -105,6 +129,27 @@ const HomeScreen = () => {
             <Typography component="span" sx={{ ml: "30%", fontSize: "1.6vmin", fontWeight: "bold", color: "white"}} >
                 SORT BY
             </Typography>
+            {/* <Menu
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    id={menuId}
+                    keepMounted
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                    open={isMenuOpen}
+                    onClose={handleMenuClose}
+                >
+                    <MenuItem onClick={() => sort("Publish Date (Newest)")}>Publish Date (Newest)</MenuItem>
+                    <MenuItem onClick={() => sort("Publish Date (Oldest)")}>Publish Date (Oldest)</MenuItem>
+                    <MenuItem onClick={() => sort("Views")}>Views</MenuItem>
+                    <MenuItem onClick={() => sort("Likes")}>Likes</MenuItem>
+                    <MenuItem onClick={() => sort("Dislikes")}>Dislikes</MenuItem>
+            </Menu> */}
             <IconButton sx={{ color: "white", mb: "0.5%" }}>
                 <Sort sx={{ fontSize: "3.5vmin" }} />
             </IconButton>
