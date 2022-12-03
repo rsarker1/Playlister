@@ -14,10 +14,10 @@ export default function SplashScreen() {
         auth.loginGuest();
     }
     return (
-        <Grid container component="main" 
+        <Grid container 
             sx={{ 
                 minWidth: '100%',
-                height: '100%', 
+                height: "100%", 
                 background: "linear-gradient(to bottom, #2193B0 0%, #6DD5ED 50%, #00FAC8 100%);", 
                 justifyContent: "center" 
             }}

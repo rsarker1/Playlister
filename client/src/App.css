@@ -21,21 +21,15 @@ body {
 }
 
 #root {
-  background-color: var(--swatch-primary);
+  background-color: white;
   font-family: "Lexend Exa";
   position: absolute;
-  width: 80%;
-  left: 10%;
-  height: 90%;
-  top: 5%;
-}
-
-#app-root {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0%;
-  left: 0%;
+  top:0;
+  left:0;
+  bottom:0;
+  right:0;
+  height:95%;
+  min-width:100%;
 }
 
 #top5-banner {
