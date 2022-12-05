@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
 import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,33 +8,39 @@ import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
 import AuthContext from '../auth'
 
-/*
-    This is a card in our list of top 5 lists. It lets select
-    a list for editing and it has controls for changing its 
-    name or deleting it.
-    
-    @author McKilla Gorilla
-*/
+import KeyboardDoubleArrowDown from '@mui/icons-material/KeyboardDoubleArrowDown';
+import Collapse from '@mui/material/Collapse';
+import List from '@mui/material/List';
+import SongCard from './SongCard.js'
+
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
     const { idNamePair } = props;
     const [text, setText] = useState(idNamePair.name);
+    const [isChecked, setIsChecked] = useState(false);
 
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
-        if (!event.target.disabled) {
-            let _id = event.target.id;
-            if (_id.indexOf('list-card-text-') >= 0)
-                _id = ("" + _id).substring("list-card-text-".length);
+        // if (!event.target.disabled) {
+        //     let _id = event.target.id;
+        //     if (_id.indexOf('list-card-text-') >= 0)
+        //         _id = ("" + _id).substring("list-card-text-".length);
 
-            console.log("load " + event.target.id);
+        //     console.log("load " + event.target.id);
 
-            // CHANGE THE CURRENT LIST
-            store.setCurrentList(id);
-        }
+        //     // CHANGE THE CURRENT LIST
+        //     store.setCurrentList(id);
+        // }
+        console.log("load " + id);
+        store.setCurrentList(id);
     }
+    
+
+    // useEffect(() => {
+    //     store.setCurrentList();
+    // }, []);
 
     function handleToggleEdit(event) {
         event.stopPropagation();
@@ -64,6 +70,18 @@ function ListCard(props) {
     function handleUpdateText(event) {
         setText(event.target.value);
     }
+
+    function handleCollapse(event, id) {
+        event.stopPropagation();
+        console.log(`CURRENT LIST: ${store.currentList}`);
+        console.log(`Passed in ID: ${id}`);
+        console.log(store);
+        handleLoadList(event, id);
+        console.log(`CURRENT LIST: ${store.currentList}`);
+        console.log(store.idNamePairs);
+        setIsChecked(true);
+    }
+
     let cardElement =
         <ListItem
             id={idNamePair._id}
@@ -78,10 +96,6 @@ function ListCard(props) {
                 background: "linear-gradient(to bottom, #43b2ce 0%, #38f4f4 100%);",  
             }}
             style={{ width: '100%', fontSize: '48pt' }}
-            button
-            onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
-            }}
         >
             <Box sx={{ pl: 1, color: 'white'}}>
                 <Box sx={{ fontSize: 40, }}>
@@ -103,7 +117,75 @@ function ListCard(props) {
                     <DeleteIcon style={{fontSize:'48pt'}} />
                 </IconButton>
             </Box>
-        </ListItem>
+            <Box sx={{ p: 1 }}>
+                <IconButton onClick={(event) => handleCollapse(event, idNamePair._id)}>
+                    <KeyboardDoubleArrowDown style={{fontSize:'48pt'}} />
+                </IconButton>
+            </Box>
+            <Collapse>
+                cool
+                {/* <Box>          
+                    <List 
+                        id="playlist-cards" 
+                        sx={{ width: '100%', bgcolor: 'background.paper' }}
+                    >
+                        {
+                            store.currentList.songs.map((song, index) => (
+                                <SongCard
+                                    id={'playlist-song-' + (index)}
+                                    key={'playlist-song-' + (index)}
+                                    index={index}
+                                    song={song}
+                                />
+                            ))  
+                        }
+                    </List>  
+                </Box> */}
+            </Collapse>
+        </ListItem>;
+    if (store.currentList != null) {
+        cardElement =
+            <ListItem
+                id={idNamePair._id}
+                key={idNamePair._id}
+                sx={{ 
+                    mt: "1%", 
+                    border: "2px solid white", 
+                    borderRadius: '30px', 
+                    display: 'flex', 
+                    p: 1, 
+                    fontFamily: "Satisfy", 
+                    background: "linear-gradient(to bottom, #43b2ce 0%, #38f4f4 100%);",  
+                }}
+                style={{ height: '10vmax', fontSize: '48pt' }}
+            >
+                <Box sx={{ pl: 1, color: 'white'}}>
+                    <Box sx={{ fontSize: 40, }}>
+                        {idNamePair.name}
+                    </Box>
+                    <Box sx={{ fontSize: 20, color: 'black'}}>
+                        By: {auth.user.userName}
+                    </Box>
+                </Box>
+                <Box sx={{ p: 1 }}>
+                    <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                        <EditIcon style={{fontSize:'48pt'}} />
+                    </IconButton>
+                </Box>
+                <Box sx={{ p: 1 }}>
+                    <IconButton onClick={(event) => {
+                            handleDeleteList(event, idNamePair._id)
+                        }} aria-label='delete'>
+                        <DeleteIcon style={{fontSize:'48pt'}} />
+                    </IconButton>
+                </Box>
+                <Box sx={{ p: 1 }}>
+                    <IconButton onClick={(event) => handleCollapse(event, idNamePair._id)}>
+                        <KeyboardDoubleArrowDown style={{fontSize:'48pt'}} />
+                    </IconButton>
+                </Box>
+            </ListItem>;
+    }
 
     if (editActive) {
         cardElement =
