@@ -30,8 +30,8 @@ const HomeScreen = () => {
     const isMenuOpen = Boolean(anchorEl);
 
     useEffect(() => {
-        store.closeCurrentList();  // REMOVE
-        store.loadIdNamePairs(); // REMOVE
+        //store.closeCurrentList();  // REMOVE
+        store.loadIdNamePairs(); // REMOVE MAYBE (MAKE WORK FOR GUEST)
     }, []);
     // No more verify call for guest, which is kinda a good thing?
 
@@ -46,7 +46,29 @@ const HomeScreen = () => {
         store.createNewList();
     }
     let listCard = "";
+    console.log(store.idNamePairs);
+    // if (store) {
+    //     listCard = 
+    //         <List>
+    //         {
+    //             store.idNamePairs.map((pair) => (
+    //                 <ListCard
+    //                     key={pair._id}
+    //                     idNamePair={pair}
+    //                     selected={false}
+    //                 />
+    //             ))
+    //         }
+    //         </List>;
+    // }
     if (store) {
+        if(store.currentList != null) 
+            store.idNamePairs.forEach((pair) => { pair.selected = pair._id === store.currentList._id });
+                // if (pair._id === store.currentList._id) 
+                //     pair.selected = true;
+                // else 
+                //     pair.selected = false;
+
         listCard = 
             <List>
             {
@@ -54,12 +76,49 @@ const HomeScreen = () => {
                     <ListCard
                         key={pair._id}
                         idNamePair={pair}
-                        selected={false}
+                        selected={pair.selected}
+                        published={pair.published}
                     />
                 ))
             }
             </List>;
     }
+
+
+    // getPlaylistPairs = async (req, res) => {
+    //     if(auth.verifyUser(req) === null){
+    //         return res.status(400).json({
+    //             errorMessage: 'UNAUTHORIZED'
+    //         })
+    //     }
+    //     console.log("getPlaylistPairs");
+    //     await User.findOne({ _id: req.userId }, (err, user) => {
+    //         console.log("find user with id " + req.userId);
+    //         async function asyncFindList(email) {
+    //             console.log("find all Playlists owned by " + email);
+    //             await Playlist.find({ ownerEmail: email }, (err, playlists) => {
+    //                 console.log("found Playlists: " + JSON.stringify(playlists));
+    //                 if (err) {
+    //                     return res.status(400).json({ success: false, error: err })
+    //                 }
+    //                 if (!playlists) {
+    //                     console.log("!playlists.length");
+    //                     return res
+    //                         .status(404)
+    //                         .json({ success: false, error: 'Playlists not found' })
+    //                 }
+    //                 else {
+    //                     console.log("Send the Playlist pairs");
+    //                     // PUT ALL THE LISTS INTO ID, NAME PAIRS
+                        
+    //                     return res.status(200).json({ success: true, idNamePairs: playlists })
+    //                 }
+    //             }).catch(err => console.log(err))
+    //         }
+    //         asyncFindList(user.email);
+    //     }).catch(err => console.log(err))
+    // }
+
 
     // THERE IS MORE TO THIS PART FOR SEARCHES AND GUEST
     let bottom = ""; 
