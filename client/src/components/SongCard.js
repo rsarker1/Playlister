@@ -1,12 +1,13 @@
-import Delete from '@mui/icons-material/Delete';
+import Clear from '@mui/icons-material/Clear';
 import { Button, IconButton } from '@mui/material';
 import React, { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
+import Box from '@mui/material/Box';
 
 function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [ draggedTo, setDraggedTo ] = useState(0);
-    const { song, index } = props;
+    const { song, index, published } = props;
 
     function handleDragStart(event) {
         event.dataTransfer.setData("song", index);
@@ -40,14 +41,19 @@ function SongCard(props) {
     }
     function handleClick(event) {
         // DOUBLE CLICK IS FOR SONG EDITING
-        if (event.detail === 2) {
-            store.showEditSongModal(index, song);
+        //event.stopPropagation();
+        console.log('CLICKING SONG');
+        if(!published){
+            if (event.detail === 2 ) {
+                console.log('CLICKING SONG TWICE');
+                store.showEditSongModal(index, song);
+            }
         }
     }
 
     let cardClass = "list-card unselected-list-card";
     return (
-        <div
+        <Box
             key={index}
             id={'song-' + index + '-card'}
             className={cardClass}
@@ -72,9 +78,9 @@ function SongCard(props) {
                 size='large'
                 onClick={handleRemoveSong}
             >
-                <Delete fontSize='large' />
+                <Clear fontSize='large' />
             </IconButton>
-        </div>
+        </Box>
     );
 }
 

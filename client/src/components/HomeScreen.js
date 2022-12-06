@@ -63,14 +63,9 @@ const HomeScreen = () => {
     //         </List>;
     // }
     if (store) {
-        if(store.currentList != null) {
+        if(store.currentList != null) 
             store.idNamePairs.forEach((pair) => { pair.selected = pair._id === store.currentList._id });
-        }
-                // if (pair._id === store.currentList._id) 
-                //     pair.selected = true;
-                // else 
-                //     pair.selected = false;
-        console.log('LOADING?');
+        
         listCard = 
             <List>
             {
@@ -192,23 +187,21 @@ const HomeScreen = () => {
                 <MenuItem onClick={() => console.log("Likes (High - Low)")} sx={{ fontSize: "1.2vmin" }}>Likes (High - Low)</MenuItem>
                 <MenuItem onClick={() => console.log("Dislikes (High - Low)")} sx={{ fontSize: "1.2vmin" }}>Dislikes (High - Low)</MenuItem>
             </Menu>
-            <Box sx={{ display: 'flex', height: '85%', backgroundColor: 'blue' }}>
+            <Box sx={{ display: 'flex', height: '85%' }}>
                 <Box sx={{
-                        ml: "1.5%",
+                        ml: "1%",
                         flexDirection: 'column',
-                        flex: 1,
-                        // width: '60%',
-                        // height: '80%',
-                        backgroundColor: 'white',
-                        // overflow: "hidden",
-                        // overflowY: "scroll",
+                        flexGrow: 1,
+                        //backgroundColor: 'white',
+                        overflowY: 'scroll',
+                        overflowX: 'hidden'
                     }}>
                     {
                         listCard
                     }
                     <MUIDeleteModal />
                 </Box>
-                <Box sx={{ width: '40%' }}>
+                <Box sx={{ width: '40%', backgroundColor: 'blue' }}>
                     TEST
                     <Box>
                         HOLD CONTROLS HERE

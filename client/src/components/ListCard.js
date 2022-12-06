@@ -50,6 +50,7 @@ function ListCard(props) {
 
     function handleToggleEdit(event) {
         event.stopPropagation();
+        console.log('DOUBLE CLICKED BOX');
         toggleEdit();
     }
 
@@ -87,22 +88,24 @@ function ListCard(props) {
         setIsChecked(isChecked => !isChecked);
     }
 
-    function handleAddNewSong() {
+    function handleAddNewSong(event) {
+        event.stopPropagation();
         store.addNewSong();
     }
-    function handleUndo() {
+    function handleUndo(event) {
+        event.stopPropagation();
         store.undo();
     }
-    function handleRedo() {
+    function handleRedo(event) {
+        event.stopPropagation();
         store.redo();
     }
-    function handleClose() {
-        store.closeCurrentList();
-    }
-    function handlePublish() {
+    function handlePublish(event) {
+        event.stopPropagation();
         store.publishList();
     }
-    function handleDuplicate() {
+    function handleDuplicate(event) {
+        event.stopPropagation();
         store.duplicateList(idNamePair)
     }
     // Edit toolbar for songs
@@ -122,10 +125,22 @@ function ListCard(props) {
                 }} aria-label='delete'>
                 <DeleteIcon style={{fontSize:'28pt'}} />
             </IconButton>
-            <Button disabled={auth.isGuest} sx={{ color: 'white', position: 'absolute', right: '200px', fontSize: 15, border: '2px solid white' }}>
+            <Button disabled={auth.isGuest} sx={{ 
+                color: 'white', 
+                position: 'absolute', 
+                right: '200px', 
+                fontSize: 15, 
+                border: '2px solid white' }}
+                onClick={handlePublish}>
                 Publish
             </Button>
-            <Button disabled={auth.isGuest} sx={{ color: 'white', position: 'absolute', right: '50px', fontSize: 15, border: '2px solid white' }}>
+            <Button disabled={auth.isGuest} sx={{ 
+                color: 'white', 
+                position: 'absolute', 
+                right: '50px', 
+                fontSize: 15, 
+                border: '2px solid white' }}
+                onClick={handleDuplicate}>
                 Duplicate
             </Button>
         </Box>;
@@ -133,7 +148,13 @@ function ListCard(props) {
     if (published) 
         editToolbar =
             <Box sx={{ mt: 1, pl: 1 }}>
-                <Button disabled={auth.isGuest} sx={{ color: 'white', position: 'absolute', right: '50px', fontSize: 15, border: '2px solid white' }}>
+                <Button disabled={auth.isGuest} sx={{ 
+                    color: 'white', 
+                    position: 'absolute', 
+                    right: '50px', 
+                    fontSize: 15, 
+                    border: '2px solid white' }}
+                    onClick={handleDuplicate}>
                     Duplicate
                 </Button>
             </Box>;
@@ -164,7 +185,7 @@ function ListCard(props) {
                 <KeyboardDoubleArrowDown style={{fontSize:'48pt'}} />
             </IconButton>
         </Box>;
-    if(isChecked && selected) 
+    if(isChecked && selected && store.currentList != null) 
         expand =
             <Box sx={{ p: 1, ml: 'auto' }}>
                 <IconButton onClick={(event) => handleCollapse(event, idNamePair._id)}>
@@ -186,6 +207,7 @@ function ListCard(props) {
                                 key={'playlist-song-' + (index)}
                                 index={index}
                                 song={song}
+                                published={published}
                             />
                         ))  
                     }
@@ -196,7 +218,6 @@ function ListCard(props) {
 
     let cardElement = 
         <Box 
-            onDoubleClick={handleToggleEdit}
             sx={{ 
             mt: "1%", 
             border: "2px solid white", 
@@ -205,7 +226,7 @@ function ListCard(props) {
             fontFamily: "Satisfy", 
             background: "linear-gradient(to bottom, #43b2ce 0%, #38f4f4 100%);",  
         }}>
-            <ListItem >
+            <ListItem onDoubleClick={handleToggleEdit}>
                 <Box sx={{ pl: 1, color: 'white'}}>
                     <Box sx={{ fontSize: 40, }}>
                         {idNamePair.name}

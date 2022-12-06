@@ -69,6 +69,12 @@ deletePlaylist = async (req, res) => {
                             success: true
                         });
                     }).catch(err => console.log(err))
+                    user.playlists.splice(user.playlists.indexOf(req.params.id), 1);
+                    user.save().catch(error => {
+                        return res.status(400).json({
+                            errorMessage: 'COULD NOT DELETE PLAYLIST FROM USER'
+                        });
+                    });
                 }
                 else {
                     console.log("incorrect user!");
@@ -81,6 +87,7 @@ deletePlaylist = async (req, res) => {
         asyncFindUser(playlist);
     })
 }
+
 getPlaylistById = async (req, res) => {
     console.log("Find Playlist with id: " + JSON.stringify(req.params.id));
 
