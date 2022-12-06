@@ -29,13 +29,16 @@ const HomeScreen = () => {
     const { auth } = useContext(AuthContext);
     const [hasFocus, setFocus] = useState("home");
     const [anchorEl, setAnchorEl] = useState(null);
+    const [text, setText] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
 
     useEffect(() => {
-        //store.closeCurrentList();  // REMOVE
-        store.loadIdNamePairs(); // REMOVE MAYBE (MAKE WORK FOR GUEST)
+        if(auth.isGuest) 
+            console.log();
+        else 
+            store.loadIdNamePairs();
     }, []);
-    // No more verify call for guest, which is kinda a good thing?
+
 
     function handleMenuOpen(event) {
         event.stopPropagation();
@@ -47,24 +50,29 @@ const HomeScreen = () => {
     function handleCreateNewList() {
         store.createNewList();
     }
+    function handleSelf() {
+        //store.showHomeView();
+    }
+    function handleAll() {
+        //store.showAllUserView();
+    }
+    function handleUsers() {
+        //store.showAllUserView();
+    }
+    function handleKeyPress(event) {
+        if (event.code === "Enter") 
+            store.searchPlaylists(text);
+    }
+    function handleUpdateText(event) {
+        setText(event.target.value);
+    }
+
     let listCard = "";
-    // if (store) {
-    //     listCard = 
-    //         <List>
-    //         {
-    //             store.idNamePairs.map((pair) => (
-    //                 <ListCard
-    //                     key={pair._id}
-    //                     idNamePair={pair}
-    //                     selected={false}
-    //                 />
-    //             ))
-    //         }
-    //         </List>;
-    // }
     if (store) {
         if(store.currentList != null) 
             store.idNamePairs.forEach((pair) => { pair.selected = pair._id === store.currentList._id });
+
+        
         
         listCard = 
             <List>
@@ -111,7 +119,7 @@ const HomeScreen = () => {
                 height: "100%", 
                 background: "linear-gradient(to bottom, #2193B0 0%, #6DD5ED 50%, #00FAC8 100%);",
         }}> 
-            <IconButton onFocus={() => setFocus("home")} onBlur={() => setFocus("")} sx={{ 
+            <IconButton onFocus={() => setFocus("home")} disabled={auth.isGuest} onClick={handleSelf} sx={{ 
                 border: '2px solid transparent', 
                 color: "white", 
                 mt: "0.2%", 
@@ -120,7 +128,7 @@ const HomeScreen = () => {
             }}>
                 <HomeOutlined sx={{ fontSize: "3.5vmin"}} />
             </IconButton>
-            <IconButton onFocus={() => setFocus("group")} onBlur={() => setFocus("")} sx={{ 
+            <IconButton onFocus={() => setFocus("group")} disabled={auth.isGuest} onClick={handleAll} sx={{ 
                 border: '2px solid transparent', 
                 color: "white", 
                 mt: "0.2%", 
@@ -129,7 +137,7 @@ const HomeScreen = () => {
             }}>
                 <GroupsOutlined sx={{ fontSize: "3.5vmin" }} />
             </IconButton>            
-            <IconButton onFocus={() => setFocus("user")} onBlur={() => setFocus("")} sx={{ 
+            <IconButton onFocus={() => setFocus("user")} disabled={auth.isGuest} onClick={handleUsers} sx={{ 
                 border: '2px solid transparent', 
                 color: "white", 
                 mt: "0.2%", 
@@ -145,6 +153,8 @@ const HomeScreen = () => {
                 name="search"
                 autoComplete="search"
                 autoFocus
+                onKeyPress={handleKeyPress}
+                onChange={handleUpdateText}
                 sx={{ 
                     ml: "25%",
                     width: "30%",

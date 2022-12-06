@@ -28,29 +28,14 @@ function ListCard(props) {
     const [text, setText] = useState(idNamePair.name);
     const [isChecked, setIsChecked] = useState(false);
 
-    function handleLoadList(event, id) {
+    async function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
-        // if (!event.target.disabled) {
-        //     let _id = event.target.id;
-        //     if (_id.indexOf('list-card-text-') >= 0)
-        //         _id = ("" + _id).substring("list-card-text-".length);
-
-        //     console.log("load " + event.target.id);
-
-        //     // CHANGE THE CURRENT LIST
-        //     store.setCurrentList(id);
-        // }
-        console.log("load " + id);
         store.setCurrentList(id);
+        store.increaseListens(id);
     }
-    
-    // useEffect(() => {
-    //     store.setCurrentList();
-    // }, []);
 
     function handleToggleEdit(event) {
         event.stopPropagation();
-        console.log('DOUBLE CLICKED BOX');
         toggleEdit();
     }
 
@@ -69,7 +54,6 @@ function ListCard(props) {
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
-            console.log("ENTER PRESSED");
             let id = event.target.id.substring("list-".length);
             store.changeListName(id, text);
             toggleEdit();
@@ -79,13 +63,22 @@ function ListCard(props) {
         setText(event.target.value);
     }
 
-    function handleCollapse(event, id) {
+    async function handleCollapse(event, id) {
         event.stopPropagation();
         handleLoadList(event, id);
-        console.log(`CURRENT LIST: ${store.currentList}`);
+        console.log(`CURRENT LIST`);
         console.log(store.currentList);
+        console.log(`ID NAME PAIRS`);
         console.log(store.idNamePairs);
         setIsChecked(isChecked => !isChecked);
+        
+    }
+
+    function handleClose(event) {
+        event.stopPropagation();
+        store.closeCurrentList();
+        console.log(`CLOSED LIST`);
+        console.log(store.currentList);
     }
 
     function handleAddNewSong(event) {
@@ -188,7 +181,7 @@ function ListCard(props) {
     if(isChecked && selected && store.currentList != null) 
         expand =
             <Box sx={{ p: 1, ml: 'auto' }}>
-                <IconButton onClick={(event) => handleCollapse(event, idNamePair._id)}>
+                <IconButton onClick={handleClose}>
                     <KeyboardDoubleArrowUp style={{fontSize:'48pt'}} />
                 </IconButton>
             </Box>;
@@ -226,7 +219,7 @@ function ListCard(props) {
             fontFamily: "Satisfy", 
             background: "linear-gradient(to bottom, #43b2ce 0%, #38f4f4 100%);",  
         }}>
-            <ListItem onDoubleClick={handleToggleEdit}>
+            <ListItem id={idNamePair._id} key={idNamePair._id} onDoubleClick={handleToggleEdit}>
                 <Box sx={{ pl: 1, color: 'white'}}>
                     <Box sx={{ fontSize: 40, }}>
                         {idNamePair.name}
