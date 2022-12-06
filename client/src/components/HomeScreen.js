@@ -17,10 +17,17 @@ import Button from '@mui/material/Button';
 import HomeOutlined from '@mui/icons-material/HomeOutlined';
 import GroupsOutlined from '@mui/icons-material/GroupsOutlined';
 import PersonOutlined from '@mui/icons-material/PersonOutlined';
+import FastRewindOutlined from '@mui/icons-material/FastRewindOutlined';
+import FastForwardOutlined from '@mui/icons-material/FastForwardOutlined';
+import Stop from '@mui/icons-material/Stop';
+import PlayArrowOutlined from '@mui/icons-material/PlayArrowOutlined';
 import TextField from "@mui/material/TextField";
 import Sort from '@mui/icons-material/Sort';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import YouTube from 'react-youtube'
+import CommentCard from './CommentCard'
+import YouTubePlayerModule from './YouTubePlayerReact';
 
 import AuthContext from '../auth'
 
@@ -30,7 +37,11 @@ const HomeScreen = () => {
     const [hasFocus, setFocus] = useState("home");
     const [anchorEl, setAnchorEl] = useState(null);
     const [text, setText] = useState(null);
+    const [comment_text, setComment] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
+
+    const [playerReveal, setPlayerReveal] = useState(true);
+    const [commentsReveal, setCommentsReveal] = useState(false);
 
     useEffect(() => {
         if(auth.isGuest) 
@@ -51,13 +62,13 @@ const HomeScreen = () => {
         store.createNewList();
     }
     function handleSelf() {
-        //store.showHomeView();
+        store.showSelfView();
     }
     function handleAll() {
-        //store.showAllUserView();
+        store.showAllView();
     }
     function handleUsers() {
-        //store.showAllUserView();
+        store.showUsersView();
     }
     function handleKeyPress(event) {
         if (event.code === "Enter") 
@@ -72,8 +83,6 @@ const HomeScreen = () => {
         if(store.currentList != null) 
             store.idNamePairs.forEach((pair) => { pair.selected = pair._id === store.currentList._id });
 
-        
-        
         listCard = 
             <List>
             {
@@ -87,6 +96,187 @@ const HomeScreen = () => {
                 ))
             }
             </List>;
+    }
+    // YOUTUBE PLAYER
+    let youtubePlayer = "";
+    let info = "";
+    let playlist = [];
+    let [currentSong, setCurrentSong] = useState(0);
+
+    const playerOptions = {
+        height: '394',
+        width: '700',
+        playerVars: {
+            // https://developers.google.com/youtube/player_parameters
+            autoplay: 0,
+        },
+    };
+    function moveNext() {
+        incSong();
+        loadAndPlayCurrentSong(youtubePlayer);
+    }
+    function movePrevious() {
+        decSong();
+        loadAndPlayCurrentSong(youtubePlayer);
+    }
+    function playerPause() {
+        if(youtubePlayer)
+            youtubePlayer.pauseVideo();
+    }
+    function playerPlay() {
+        if (youtubePlayer) 
+            youtubePlayer.playVideo();
+    }
+    function incSong() {
+        setCurrentSong(currentSong++);
+        setCurrentSong(currentSong % playlist.length);
+    }
+    function decSong() {
+        setCurrentSong(currentSong--);
+        if (currentSong < 0) 
+            setCurrentSong(playlist.length - 1);
+        console.log("index: " + currentSong);
+        setCurrentSong(currentSong % playlist.length);
+    }
+    function loadAndPlayCurrentSong(player) {
+        let song = playlist[currentSong];
+        player.loadVideoById(song);
+        player.playVideo();
+    }
+    function onPlayerReady(event) {
+        loadAndPlayCurrentSong(event.target);
+        event.target.playVideo();
+        youtubePlayer = event.target;
+    }
+    function onPlayerStateChange(event) {
+        let stat = event.data;
+        let player = event.target;
+        if (stat === -1) {
+            // VIDEO UNSTARTED
+            console.log("-1 Video unstarted");
+        } else if (stat === 0) {
+            // THE VIDEO HAS COMPLETED PLAYING
+            console.log("0 Video ended");
+            incSong();
+            loadAndPlayCurrentSong(player);
+        } else if (stat === 1) {
+            // THE VIDEO IS PLAYED
+            console.log("1 Video played");
+        } else if (stat === 2) {
+            // THE VIDEO IS PAUSED
+            console.log("2 Video paused");
+        } else if (stat === 3) {
+            // THE VIDEO IS BUFFERING
+            console.log("3 Video buffering");
+        } else if (stat === 5) {
+            // THE VIDEO HAS BEEN CUED
+            console.log("5 Video cued");
+        }
+    }
+    if (!store.isCurrentListNull() && store.getPlaylistSize() > 0) {
+        let songs = store.currentList.songs;
+
+        console.log(songs);
+        playlist = songs.map((song) => (song.youTubeId));
+        youtubePlayer = 
+            <Box sx={{ ml: '15%' }}>
+                <YouTube
+                    videoId={playlist[currentSong]}
+                    opts={playerOptions}
+                    onReady={onPlayerReady}
+                    onStateChange={onPlayerStateChange}  />
+                <Box sx={{ ml: '25%' }}>
+                    <IconButton disabled={store.isCurrentListNull()} onClick={movePrevious} >
+                        <FastRewindOutlined sx={{ fontSize:'25pt' }} />
+                    </IconButton>
+                    <IconButton disabled={store.isCurrentListNull()} onClick={playerPlay} >
+                        <PlayArrowOutlined sx={{ fontSize:'25pt' }} />
+                    </IconButton>
+                    <IconButton disabled={store.isCurrentListNull()} onClick={playerPause} >
+                        <Stop sx={{ fontSize:'25pt' }} />
+                    </IconButton>
+                    <IconButton disabled={store.isCurrentListNull()} onClick={moveNext} >
+                        <FastForwardOutlined sx={{ fontSize:'25pt' }} />
+                    </IconButton>
+                </Box>
+            </Box>;
+        info = 
+            <Box sx={{ color: 'white', fontSize: 48, ml: '15%' }}>
+                <Typography sx={{ fontSize: 28 }}>
+                    Playlist: {store.currentList.name}
+                </Typography>
+                <Typography sx={{ fontSize: 28 }}>
+                    Songs #: {currentSong + 1}
+                </Typography>
+                <Typography sx={{ fontSize: 28 }}>
+                    Title: {store.currentList.songs[currentSong].title}
+                </Typography>
+                <Typography sx={{ fontSize: 28 }}>
+                    Artist #: {store.currentList.songs[currentSong].artist}
+                </Typography>
+            </Box>;
+    }
+
+    function revealPlayer() {
+        if(!store.isCurrentListNull() && store.currentList.isPublished) {
+            setPlayerReveal(true);
+            setCommentsReveal(false);
+            console.log('REVEALING PLAYER');
+        }
+    }
+    // COMMENTS
+    let comments = "";
+    let comments_box = "";
+
+    function handleSubmitComment(event) {
+        if (event.code === "Enter") {
+            store.addCommentToPlaylist(auth.user.userName, comment_text);
+            setComment("");
+        }
+    }
+    function handleUpdateComment(event) {
+        setComment(event.target.value);
+    }
+
+    if (!store.isCurrentListNull() && store.getPlaylistSize() > 0 && store.currentList.isPublished) {
+        console.log('CHECKING COMMENTS');
+        comments = 
+            store.currentList.comments.map((comment) => (
+                <CommentCard
+                    author={comment.author}
+                    text={comment.text}
+                />
+            ))  
+        comments_box =
+            <Box sx={{ backgroundColor: 'white', display: commentsReveal ? 'block' : 'none' }}>
+                {comments}
+                <TextField
+                    margin="normal"
+                    id="search"
+                    label="Search"
+                    name="search"
+                    autoComplete="search"
+                    autoFocus
+                    onKeyPress={handleSubmitComment}
+                    onChange={handleUpdateComment}
+                    sx={{ 
+                        width: "30%",
+                        input: {
+                            background: "white",
+                            height: "1.4vmin"
+                        }
+                    }}
+                />
+            </Box>;
+    }
+
+    function revealComments() {
+        if(!store.isCurrentListNull() && store.currentList.isPublished) {
+            setPlayerReveal(false);
+            setCommentsReveal(true);
+            console.log('REVEALING COMMENTS');
+            console.log(store.currentList.comments);
+        }
     }
 
 
@@ -211,11 +401,18 @@ const HomeScreen = () => {
                     }
                     <MUIDeleteModal />
                 </Box>
-                <Box sx={{ width: '40%', backgroundColor: 'blue' }}>
-                    TEST
-                    <Box>
-                        HOLD CONTROLS HERE
+                <Box sx={{ width: '40%' }}>
+                    <Button sx={{ color: 'white', border: '2px solid white' }} onClick={revealPlayer}>
+                        Player
+                    </Button>
+                    <Button sx={{ color: 'white', border: '2px solid white' }} onClick={revealComments}>
+                        Comments
+                    </Button>
+                    <Box sx={{ display: playerReveal ? 'block' : 'none' }}>
+                        {youtubePlayer}
+                        {info}
                     </Box>
+                    {comments_box}
                 </Box>
             </Box>
             {bottom}

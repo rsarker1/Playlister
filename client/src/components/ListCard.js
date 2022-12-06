@@ -29,9 +29,22 @@ function ListCard(props) {
     const [isChecked, setIsChecked] = useState(false);
 
     async function handleLoadList(event, id) {
+        if(event.detail === 2) 
+            return handleToggleEdit(event);
         console.log("handleLoadList for " + id);
-        store.setCurrentList(id);
-        store.increaseListens(id);
+        if (!event.target.disabled) {
+            let _id = event.target.id;
+            if (_id.indexOf('list-card-text-') >= 0)
+                _id = ("" + _id).substring("list-card-text-".length);
+
+            console.log("load " + event.target.id);
+
+            // CHANGE THE CURRENT LIST
+            store.setCurrentList(id);
+            store.increaseListens(id);
+            console.log(`CURRENT LIST`);
+            console.log(store.currentList);
+        }
     }
 
     function handleToggleEdit(event) {
@@ -66,12 +79,14 @@ function ListCard(props) {
     async function handleCollapse(event, id) {
         event.stopPropagation();
         handleLoadList(event, id);
+        console.log(`CURRENT ID: ${id}`);
         console.log(`CURRENT LIST`);
         console.log(store.currentList);
         console.log(`ID NAME PAIRS`);
         console.log(store.idNamePairs);
+        console.log(`ID CURRENT:`);
+        console.log(idNamePair);
         setIsChecked(isChecked => !isChecked);
-        
     }
 
     function handleClose(event) {
@@ -100,6 +115,14 @@ function ListCard(props) {
     function handleDuplicate(event) {
         event.stopPropagation();
         store.duplicateList(idNamePair)
+    }
+    function handleLike(event) {
+        event.stopPropagation();
+        store.addLike(idNamePair._id, auth.user.userName);
+    }
+    function handleDislike(event) {
+        event.stopPropagation();
+        store.addDislike(idNamePair._id, auth.user.userName)
     }
     // Edit toolbar for songs
     let editToolbar = 
@@ -158,14 +181,14 @@ function ListCard(props) {
     if (published) {
         likeAndDislike = 
         <Box sx={{ position: 'absolute', left: '50%' }}>
-            <IconButton disabled={auth.isGuest}>
+            <IconButton disabled={auth.isGuest} onClick={handleLike}>
                 <ThumbUpOutlined style={{fontSize:'48pt'}} />
             </IconButton>
-            {idNamePair.likes}
-            <IconButton disabled={auth.isGuest}>
+            {idNamePair.likes.length}
+            <IconButton disabled={auth.isGuest} onClick={handleDislike}>
                     <ThumbDownOutlined style={{fontSize:'48pt'}} />
             </IconButton>
-            {idNamePair.dislikes}
+            {idNamePair.dislikes.length}
             <Box sx={{ pl: 1 }} style={{fontSize: '15pt'}}>
                 Listens: {idNamePair.listens}
             </Box>
@@ -219,13 +242,13 @@ function ListCard(props) {
             fontFamily: "Satisfy", 
             background: "linear-gradient(to bottom, #43b2ce 0%, #38f4f4 100%);",  
         }}>
-            <ListItem id={idNamePair._id} key={idNamePair._id} onDoubleClick={handleToggleEdit}>
+            <ListItem id={idNamePair._id} key={idNamePair._id} onClick={(event) => handleLoadList(event, idNamePair._id)}>
                 <Box sx={{ pl: 1, color: 'white'}}>
                     <Box sx={{ fontSize: 40, }}>
                         {idNamePair.name}
                     </Box>
                     <Box sx={{ fontSize: 20, color: 'black'}}>
-                        By: {auth.user.userName}
+                        By: {idNamePair.ownerUserName}
                     </Box>
                     <Box sx={{ display: published ? 'inline' : 'none', fontSize: 20, color: 'black'}}>
                         Published: {idNamePair.publishedDate}

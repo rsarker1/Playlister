@@ -20,8 +20,14 @@ const playlistSchema = new Schema(
             text: String
         }], required: true},
         listens: { type: Number, required: true },
-        likes: { type: Number, required: true },
-        dislikes: { type: Number, required: true },
+        likes: {
+            type: [{ author: String }],
+            required: true
+        },
+        dislikes: {
+            type: [{ author: String }],
+            required: true
+        },
     },
     { timestamps: true },
 )
