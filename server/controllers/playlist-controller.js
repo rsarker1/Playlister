@@ -45,6 +45,7 @@ createPlaylist = (req, res) => {
             });
     })
 }
+
 deletePlaylist = async (req, res) => {
     console.log("delete Playlist with id: " + JSON.stringify(req.params.id));
     console.log("delete " + req.params.id);
@@ -160,7 +161,6 @@ updatePlaylist = async (req, res) => {
     const body = req.body
     console.log("updatePlaylist: " + JSON.stringify(body));
     console.log("req.body.name: " + req.body.name);
-
     if (!body) {
         return res.status(400).json({
             success: false,

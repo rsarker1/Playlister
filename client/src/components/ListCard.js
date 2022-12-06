@@ -9,7 +9,14 @@ import TextField from '@mui/material/TextField';
 import AuthContext from '../auth'
 
 import KeyboardDoubleArrowDown from '@mui/icons-material/KeyboardDoubleArrowDown';
-import Collapse from '@mui/material/Collapse';
+import KeyboardDoubleArrowUp from '@mui/icons-material/KeyboardDoubleArrowUp';
+import ThumbUpOutlined from '@mui/icons-material/ThumbUpOutlined';
+import ThumbDownOutlined from '@mui/icons-material/ThumbDownOutlined';
+import Add from '@mui/icons-material/Add';
+import Redo from '@mui/icons-material/Redo';
+import Undo from '@mui/icons-material/Undo';
+import Close from '@mui/icons-material/HighlightOff';
+import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import SongCard from './SongCard.js'
 
@@ -17,7 +24,7 @@ function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
-    const { idNamePair, selected } = props;
+    const { idNamePair, selected, published } = props;
     const [text, setText] = useState(idNamePair.name);
     const [isChecked, setIsChecked] = useState(false);
 
@@ -61,6 +68,7 @@ function ListCard(props) {
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
+            console.log("ENTER PRESSED");
             let id = event.target.id.substring("list-".length);
             store.changeListName(id, text);
             toggleEdit();
@@ -71,23 +79,109 @@ function ListCard(props) {
     }
 
     function handleCollapse(event, id) {
-        //event.stopPropagation();
-        console.log(`CURRENT LIST: ${store.currentList}`);
-        console.log(`Passed in ID: ${id}`);
-        console.log(store);
+        event.stopPropagation();
         handleLoadList(event, id);
         console.log(`CURRENT LIST: ${store.currentList}`);
+        console.log(store.currentList);
         console.log(store.idNamePairs);
-        store.addNewSong();
-        setIsChecked(true);
+        setIsChecked(isChecked => !isChecked);
     }
 
+    function handleAddNewSong() {
+        store.addNewSong();
+    }
+    function handleUndo() {
+        store.undo();
+    }
+    function handleRedo() {
+        store.redo();
+    }
+    function handleClose() {
+        store.closeCurrentList();
+    }
+    function handlePublish() {
+        store.showPublishListModal();
+    }
+    function handleDuplicate() {
+        store.duplicateList(idNamePair)
+    }
+
+    let editToolbar = 
+        <Box sx={{ mb: 1, pl: 1 }}>
+            <IconButton disabled={!store.canAddNewSong()} onClick={handleAddNewSong} >
+                <Add style={{fontSize:'28pt'}} />
+            </IconButton>
+            <IconButton sx={{ ml: 1 }} disabled={!store.canUndo()} onClick={handleUndo} >
+                <Undo style={{fontSize:'28pt'}} />
+            </IconButton>
+            <IconButton sx={{ ml: 1 }} disabled={!store.canRedo()} onClick={handleRedo} >
+                <Redo style={{fontSize:'28pt'}} />
+            </IconButton>
+            <IconButton sx={{ ml: 1 }} onClick={(event) => {
+                    handleDeleteList(event, idNamePair._id)
+                }} aria-label='delete'>
+                <DeleteIcon style={{fontSize:'28pt'}} />
+            </IconButton>
+        </Box>;
+
+    if (published) 
+        editToolbar =
+            <div id="edit-toolbar">
+            </div>;
+    
+
+    // Toggle like and dislike based on published
+    let likeAndDislike = "";
+    if (!published) {
+        likeAndDislike = 
+        <Box sx={{ position: 'absolute', left: '50%' }}>
+            <IconButton disabled={auth.isGuest}>
+                <ThumbUpOutlined style={{fontSize:'48pt'}} />
+            </IconButton>
+            {idNamePair.likes}
+            <IconButton disabled={auth.isGuest}>
+                    <ThumbDownOutlined style={{fontSize:'48pt'}} />
+            </IconButton>
+            {idNamePair.dislikes}
+        </Box>;
+
+
+        // likeButton = 
+        //     <Box sx={{ p: 1, margin: '0 auto' }}>
+        //         <IconButton disabled={auth.isGuest}>
+        //             <ThumbUpOutlined style={{fontSize:'48pt'}} />
+        //         </IconButton>
+        //         {idNamePair.likes}
+        //     </Box>;
+        // dislikeButton = 
+        //     <Box sx={{ p: 1 }}>
+        //         <IconButton disabled={auth.isGuest}>
+        //             <ThumbDownOutlined style={{fontSize:'48pt'}} />
+        //         </IconButton>
+        //         {idNamePair.dislikes}
+        //     </Box>;
+    }
+    // Show expand button normally, and show close if the button was pressed for the selected playlist
+    let expand =
+        <Box sx={{ p: 1 }}>
+            <IconButton onClick={(event) => handleCollapse(event, idNamePair._id)}>
+                <KeyboardDoubleArrowDown style={{fontSize:'48pt'}} />
+            </IconButton>
+        </Box>;
+    if(isChecked && selected) 
+        expand =
+            <Box sx={{ p: 1 }}>
+                <IconButton onClick={(event) => handleCollapse(event, idNamePair._id)}>
+                    <KeyboardDoubleArrowUp style={{fontSize:'48pt'}} />
+                </IconButton>
+            </Box>;
+    // Show the songs from selected playlist and expand button pressed
     let songs = "";
-    if(selected && store.currentList != null) {
+    if(selected && store.currentList != null && isChecked) {
         songs =
             <Box>          
                 <List 
-                    sx={{ width: '100%', bgcolor: 'background.paper' }}
+                    sx={{ width: '100%', height: '300px' }}
                 >
                     {
                         store.currentList.songs.map((song, index) => (
@@ -99,99 +193,36 @@ function ListCard(props) {
                             />
                         ))  
                     }
-                </List>  
+                </List>
+                {editToolbar}  
             </Box>;
     }
 
     let cardElement = 
-        <ListItem
-            id={idNamePair._id}
-            key={idNamePair._id}
+        <Box 
+            onDoubleClick={handleToggleEdit}
             sx={{ 
-                mt: "1%", 
-                border: "2px solid white", 
-                borderRadius: '30px', 
-                display: 'flex', 
-                p: 1, 
-                fontFamily: "Satisfy", 
-                background: "linear-gradient(to bottom, #43b2ce 0%, #38f4f4 100%);",  
-            }}
-            style={{ width: '100%', fontSize: '48pt' }}
-        >
-            <Box sx={{ pl: 1, color: 'white'}}>
-                <Box sx={{ fontSize: 40, }}>
-                    {idNamePair.name}
+            mt: "1%", 
+            border: "2px solid white", 
+            borderRadius: '30px', 
+            display: 'block', 
+            fontFamily: "Satisfy", 
+            background: "linear-gradient(to bottom, #43b2ce 0%, #38f4f4 100%);",  
+        }}>
+            <ListItem >
+                <Box sx={{ pl: 1, color: 'white'}}>
+                    <Box sx={{ fontSize: 40, }}>
+                        {idNamePair.name}
+                    </Box>
+                    <Box sx={{ fontSize: 20, color: 'black'}}>
+                        By: {auth.user.userName}
+                    </Box>
                 </Box>
-                <Box sx={{ fontSize: 20, color: 'black'}}>
-                    By: {auth.user.userName}
-                </Box>
-            </Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                    <EditIcon style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
-                    }} aria-label='delete'>
-                    <DeleteIcon style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={(event) => handleCollapse(event, idNamePair._id)}>
-                    <KeyboardDoubleArrowDown style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box>
-            <Collapse in={isChecked}>
-                cool
-                {songs}
-            </Collapse>
-        </ListItem>;
-
-    // if (store.currentList != null) {
-    //     cardElement =
-    //         <ListItem
-    //             id={idNamePair._id}
-    //             key={idNamePair._id}
-    //             sx={{ 
-    //                 mt: "1%", 
-    //                 border: "2px solid white", 
-    //                 borderRadius: '30px', 
-    //                 display: 'flex', 
-    //                 p: 1, 
-    //                 fontFamily: "Satisfy", 
-    //                 background: "linear-gradient(to bottom, #43b2ce 0%, #38f4f4 100%);",  
-    //             }}
-    //             style={{ height: '10vmax', fontSize: '48pt' }}
-    //         >
-    //             <Box sx={{ pl: 1, color: 'white'}}>
-    //                 <Box sx={{ fontSize: 40, }}>
-    //                     {idNamePair.name}
-    //                 </Box>
-    //                 <Box sx={{ fontSize: 20, color: 'black'}}>
-    //                     By: {auth.user.userName}
-    //                 </Box>
-    //             </Box>
-    //             <Box sx={{ p: 1 }}>
-    //                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
-    //                     <EditIcon style={{fontSize:'48pt'}} />
-    //                 </IconButton>
-    //             </Box>
-    //             <Box sx={{ p: 1 }}>
-    //                 <IconButton onClick={(event) => {
-    //                         handleDeleteList(event, idNamePair._id)
-    //                     }} aria-label='delete'>
-    //                     <DeleteIcon style={{fontSize:'48pt'}} />
-    //                 </IconButton>
-    //             </Box>
-    //             <Box sx={{ p: 1 }}>
-    //                 <IconButton onClick={(event) => handleCollapse(event, idNamePair._id)}>
-    //                     <KeyboardDoubleArrowDown style={{fontSize:'48pt'}} />
-    //                 </IconButton>
-    //             </Box>
-    //         </ListItem>;
-    // }
+                {expand}
+                {likeAndDislike}
+            </ListItem>
+            {songs}
+        </Box>;
 
     if (editActive) {
         cardElement =
