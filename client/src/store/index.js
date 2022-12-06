@@ -238,12 +238,8 @@ function GlobalStoreContextProvider(props) {
                 let playlist = response.data.playlist;
                 playlist.name = newName;
                 async function updateList(playlist) {
-                    console.log('CHECKING PLAYLIST');
-                    console.log(playlist);
-                    console.log('-----------------');
                     response = await api.updatePlaylistById(playlist._id, playlist);
                     if (response.data.success) {
-                        console.log('THERE WAS A SUCCESS 2');
                         async function getListPairs(playlist) {
                             response = await api.getPlaylistPairs();
                             if (response.data.success) {
@@ -542,6 +538,15 @@ function GlobalStoreContextProvider(props) {
     }
     store.canClose = function() {
         return (store.currentList !== null);
+    }
+    store.publishList = function() {
+        if(store.currentList) {
+            let list = store.currentList;
+            list.published = true;
+            let today = new Date();
+            list.publishedDate = today.toLocaleDateString("en-US");
+        }
+        //store.updateCurrentList(store.showHomeView);
     }
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME

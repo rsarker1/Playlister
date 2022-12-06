@@ -100,21 +100,21 @@ function ListCard(props) {
         store.closeCurrentList();
     }
     function handlePublish() {
-        store.showPublishListModal();
+        store.publishList();
     }
     function handleDuplicate() {
         store.duplicateList(idNamePair)
     }
-
+    // Edit toolbar for songs
     let editToolbar = 
-        <Box sx={{ mb: 1, pl: 1 }}>
-            <IconButton disabled={!store.canAddNewSong()} onClick={handleAddNewSong} >
+        <Box sx={{ mt: 1, pl: 1 }}>
+            <IconButton disabled={!store.canAddNewSong() || store.currentModal !== 'NONE'} onClick={handleAddNewSong} >
                 <Add style={{fontSize:'28pt'}} />
             </IconButton>
-            <IconButton sx={{ ml: 1 }} disabled={!store.canUndo()} onClick={handleUndo} >
+            <IconButton sx={{ ml: 1 }} disabled={!store.canUndo() || store.currentModal !== 'NONE'} onClick={handleUndo} >
                 <Undo style={{fontSize:'28pt'}} />
             </IconButton>
-            <IconButton sx={{ ml: 1 }} disabled={!store.canRedo()} onClick={handleRedo} >
+            <IconButton sx={{ ml: 1 }} disabled={!store.canRedo() || store.currentModal !== 'NONE'} onClick={handleRedo} >
                 <Redo style={{fontSize:'28pt'}} />
             </IconButton>
             <IconButton sx={{ ml: 1 }} onClick={(event) => {
@@ -122,17 +122,26 @@ function ListCard(props) {
                 }} aria-label='delete'>
                 <DeleteIcon style={{fontSize:'28pt'}} />
             </IconButton>
+            <Button disabled={auth.isGuest} sx={{ color: 'white', position: 'absolute', right: '200px', fontSize: 15, border: '2px solid white' }}>
+                Publish
+            </Button>
+            <Button disabled={auth.isGuest} sx={{ color: 'white', position: 'absolute', right: '50px', fontSize: 15, border: '2px solid white' }}>
+                Duplicate
+            </Button>
         </Box>;
-
+    // Change if published list
     if (published) 
         editToolbar =
-            <div id="edit-toolbar">
-            </div>;
+            <Box sx={{ mt: 1, pl: 1 }}>
+                <Button disabled={auth.isGuest} sx={{ color: 'white', position: 'absolute', right: '50px', fontSize: 15, border: '2px solid white' }}>
+                    Duplicate
+                </Button>
+            </Box>;
     
 
     // Toggle like and dislike based on published
     let likeAndDislike = "";
-    if (!published) {
+    if (published) {
         likeAndDislike = 
         <Box sx={{ position: 'absolute', left: '50%' }}>
             <IconButton disabled={auth.isGuest}>
@@ -143,34 +152,21 @@ function ListCard(props) {
                     <ThumbDownOutlined style={{fontSize:'48pt'}} />
             </IconButton>
             {idNamePair.dislikes}
+            <Box sx={{ pl: 1 }} style={{fontSize: '15pt'}}>
+                Listens: {idNamePair.listens}
+            </Box>
         </Box>;
-
-
-        // likeButton = 
-        //     <Box sx={{ p: 1, margin: '0 auto' }}>
-        //         <IconButton disabled={auth.isGuest}>
-        //             <ThumbUpOutlined style={{fontSize:'48pt'}} />
-        //         </IconButton>
-        //         {idNamePair.likes}
-        //     </Box>;
-        // dislikeButton = 
-        //     <Box sx={{ p: 1 }}>
-        //         <IconButton disabled={auth.isGuest}>
-        //             <ThumbDownOutlined style={{fontSize:'48pt'}} />
-        //         </IconButton>
-        //         {idNamePair.dislikes}
-        //     </Box>;
     }
     // Show expand button normally, and show close if the button was pressed for the selected playlist
     let expand =
-        <Box sx={{ p: 1 }}>
+        <Box sx={{ p: 1, ml: 'auto' }}>
             <IconButton onClick={(event) => handleCollapse(event, idNamePair._id)}>
                 <KeyboardDoubleArrowDown style={{fontSize:'48pt'}} />
             </IconButton>
         </Box>;
     if(isChecked && selected) 
         expand =
-            <Box sx={{ p: 1 }}>
+            <Box sx={{ p: 1, ml: 'auto' }}>
                 <IconButton onClick={(event) => handleCollapse(event, idNamePair._id)}>
                     <KeyboardDoubleArrowUp style={{fontSize:'48pt'}} />
                 </IconButton>
@@ -181,7 +177,7 @@ function ListCard(props) {
         songs =
             <Box>          
                 <List 
-                    sx={{ width: '100%', height: '300px' }}
+                    sx={{ width: '100%', height: '300px', overflow: 'auto', border: "3px solid white", borderRadius: '30px', }}
                 >
                     {
                         store.currentList.songs.map((song, index) => (
@@ -216,6 +212,9 @@ function ListCard(props) {
                     </Box>
                     <Box sx={{ fontSize: 20, color: 'black'}}>
                         By: {auth.user.userName}
+                    </Box>
+                    <Box sx={{ display: published ? 'inline' : 'none', fontSize: 20, color: 'black'}}>
+                        Published: {idNamePair.publishedDate}
                     </Box>
                 </Box>
                 {expand}

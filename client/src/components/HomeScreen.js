@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
+import MUIEditSongModal from './MUIEditSongModal'
+import MUIRemoveSongModal from './MUIRemoveSongModal'
 
 import Add from '@mui/icons-material/Add';
 import List from '@mui/material/List';
@@ -46,7 +48,6 @@ const HomeScreen = () => {
         store.createNewList();
     }
     let listCard = "";
-    console.log(store.idNamePairs);
     // if (store) {
     //     listCard = 
     //         <List>
@@ -102,6 +103,12 @@ const HomeScreen = () => {
                 Your Lists
             </Box>;
     }
+
+    let modals = "";
+    if (store.isEditSongModalOpen()) 
+        modals = <MUIEditSongModal />;
+    else if (store.isRemoveSongModalOpen()) 
+        modals = <MUIRemoveSongModal />;
 
     return (
         <Box sx={{ 
@@ -199,6 +206,7 @@ const HomeScreen = () => {
                     {
                         listCard
                     }
+                    <MUIDeleteModal />
                 </Box>
                 <Box sx={{ width: '40%' }}>
                     TEST
@@ -208,14 +216,7 @@ const HomeScreen = () => {
                 </Box>
             </Box>
             {bottom}
-
-            {/*
-            <div id="list-selector-list">
-                {
-                    listCard
-                }
-                <MUIDeleteModal />
-            </div> */}
+            {modals}
         </Box>
     )
 }
