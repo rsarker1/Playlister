@@ -240,7 +240,6 @@ updatePlaylist = async (req, res) => {
             error: 'You must provide a body to update',
         })
     }
-
     Playlist.findOne({ _id: req.params.id }, (err, playlist) => {
         console.log("playlist found: " + JSON.stringify(playlist));
         if (err) {
@@ -261,6 +260,12 @@ updatePlaylist = async (req, res) => {
 
                     list.name = body.playlist.name;
                     list.songs = body.playlist.songs;
+                    list.isPublished = body.playlist.isPublished;
+                    list.publishedDate = body.playlist.publishedDate;
+                    list.likes = body.playlist.likes;
+                    list.dislikes = body.playlist.dislikes;
+                    list.listens = body.playlist.listens;
+                    list.comments = body.playlist.comments;
                     list
                         .save()
                         .then(() => {

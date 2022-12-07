@@ -82,7 +82,8 @@ const HomeScreen = () => {
     if (store) {
         if(store.currentList != null) 
             store.idNamePairs.forEach((pair) => { pair.selected = pair._id === store.currentList._id });
-
+        console.log('CHECKING IDNAMEPAIRS');
+        console.log(store.idNamePairs);
         listCard = 
             <List>
             {
@@ -91,7 +92,7 @@ const HomeScreen = () => {
                         key={pair._id}
                         idNamePair={pair}
                         selected={pair.selected}
-                        published={pair.published}
+                        published={pair.isPublished}
                     />
                 ))
             }
@@ -113,11 +114,11 @@ const HomeScreen = () => {
     };
     function moveNext() {
         incSong();
-        loadAndPlayCurrentSong(youtubePlayer);
+        //loadAndPlayCurrentSong(youtubePlayer);
     }
     function movePrevious() {
         decSong();
-        loadAndPlayCurrentSong(youtubePlayer);
+        //loadAndPlayCurrentSong(youtubePlayer);
     }
     function playerPause() {
         if(youtubePlayer)
@@ -133,8 +134,12 @@ const HomeScreen = () => {
     }
     function decSong() {
         setCurrentSong(currentSong--);
-        if (currentSong < 0) 
-            setCurrentSong(playlist.length - 1);
+        console.log(currentSong);
+        console.log(playlist.length);
+        if (currentSong < 0) {
+            currentSong = playlist.length - 1;
+            setCurrentSong(currentSong);
+        }
         console.log("index: " + currentSong);
         setCurrentSong(currentSong % playlist.length);
     }
@@ -153,30 +158,31 @@ const HomeScreen = () => {
         let player = event.target;
         if (stat === -1) {
             // VIDEO UNSTARTED
-            console.log("-1 Video unstarted");
+            console.log("-1: Video unstarted");
         } else if (stat === 0) {
             // THE VIDEO HAS COMPLETED PLAYING
-            console.log("0 Video ended");
+            console.log("0: Video ended");
             incSong();
             loadAndPlayCurrentSong(player);
         } else if (stat === 1) {
             // THE VIDEO IS PLAYED
-            console.log("1 Video played");
+            console.log("1: Video played");
         } else if (stat === 2) {
             // THE VIDEO IS PAUSED
-            console.log("2 Video paused");
+            console.log("2: Video paused");
         } else if (stat === 3) {
             // THE VIDEO IS BUFFERING
-            console.log("3 Video buffering");
+            console.log("3: Video buffering");
         } else if (stat === 5) {
             // THE VIDEO HAS BEEN CUED
-            console.log("5 Video cued");
+            console.log("5: Video cued");
         }
     }
     if (!store.isCurrentListNull() && store.getPlaylistSize() > 0) {
         let songs = store.currentList.songs;
-
+        console.log(`SONGS FOR THIS LIST`);
         console.log(songs);
+        console.log(store.currentList);
         playlist = songs.map((song) => (song.youTubeId));
         youtubePlayer = 
             <Box sx={{ ml: '15%' }}>

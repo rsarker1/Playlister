@@ -6,7 +6,7 @@ function CommentCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const { author, text } = props;
 
-    let comment = `[${author}] : ${text}`
+    let comment = `${author} : ${text}`
     return (
         <Box>
             {comment}

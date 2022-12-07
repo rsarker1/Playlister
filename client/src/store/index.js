@@ -366,6 +366,7 @@ function GlobalStoreContextProvider(props) {
         if (response.status === 201) {
             tps.clearAllTransactions();
             let newList = response.data.playlist;
+            store.idNamePairs.push(newList);
             store.loadIdNamePairs();
         }
         else 
@@ -573,16 +574,17 @@ function GlobalStoreContextProvider(props) {
         let transaction = new UpdateSong_Transaction(this, index, oldSongData, newSongData);        
         tps.addTransaction(transaction);
     }
-    store.updateCurrentList = function(callback) {
+    store.updateCurrentList = function() {
         async function asyncUpdateCurrentList() {
+            console.log('ARE YOU UPDATING');
+            console.log(store);
             const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
             if (response.data.success) {
+                console.log('SUCCESS ON UPDATE');
                 storeReducer({
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
                     payload: store.currentList
                 });
-                if(callback)
-                    callback();
             }
         }
         if(!auth.isGuest)
@@ -653,20 +655,22 @@ function GlobalStoreContextProvider(props) {
             store.updateList(id, store.idNamePairs[index]);
     }
     store.publishList = function() {
-        console.log('PUBLISHING');
+        console.log('PUBLISHING ONCE MORE');
         if(store.currentList) {
             console.log('CURRENT LIST RIGHT NOW');
             console.log(store.currentList);
-            let list = store.currentList;
-            list.isPublished = true;
+            store.currentList.isPublished = true;
             let today = new Date();
-            list.publishedDate = today.toLocaleDateString("en-US");
+            store.currentList.publishedDate = today.toLocaleDateString("en-US");
         }
-        store.updateCurrentList(store.showSelfView());
+        store.updateCurrentList();
     }
     store.duplicateList = function(list) {
         async function asyncDuplicateList(){
-            const response = await api.createPlaylist(list.name, list.songs, auth.user.userName, auth.user.firstName, auth.user.lastName, auth.user.email);
+            console.log('DUPLICATING LIST');
+            console.log(list);
+            console.log(auth.user);                                     
+            const response = await api.createPlaylist(`Copy of ${list.name}${store.newListCounter}`, list.songs, auth.user.email, auth.user.userName, auth.user.firstName, auth.user.lastName);
             if(response.status === 201) {
                 tps.clearAllTransactions();
                 let newList = response.data.playlist;

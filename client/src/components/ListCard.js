@@ -46,7 +46,6 @@ function ListCard(props) {
             console.log(store.currentList);
         }
     }
-
     function handleToggleEdit(event) {
         event.stopPropagation();
         toggleEdit();
@@ -110,7 +109,11 @@ function ListCard(props) {
     }
     function handlePublish(event) {
         event.stopPropagation();
+        console.log('PUBLISHING')
+        console.log(store.currentList);
+        console.log(idNamePair._id);
         store.publishList();
+        //store.publishList().then(() => {another functrion} );
     }
     function handleDuplicate(event) {
         event.stopPropagation();
@@ -163,7 +166,7 @@ function ListCard(props) {
     // Change if published list
     if (published) 
         editToolbar =
-            <Box sx={{ mt: 1, pl: 1 }}>
+            <Box sx={{ mt: 1, pl: 1, width: '100%', height: '50px', }}>
                 <Button disabled={auth.isGuest} sx={{ 
                     color: 'white', 
                     position: 'absolute', 
