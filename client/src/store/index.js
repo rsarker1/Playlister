@@ -670,7 +670,7 @@ function GlobalStoreContextProvider(props) {
             console.log('DUPLICATING LIST');
             console.log(list);
             console.log(auth.user);                                     
-            const response = await api.createPlaylist(`Copy of ${list.name}${store.newListCounter}`, list.songs, auth.user.email, auth.user.userName, auth.user.firstName, auth.user.lastName);
+            const response = await api.createPlaylist(`Copy of ${list.name}${store.newListCounter++}`, list.songs, auth.user.email, auth.user.userName, auth.user.firstName, auth.user.lastName);
             if(response.status === 201) {
                 tps.clearAllTransactions();
                 let newList = response.data.playlist;

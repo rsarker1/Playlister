@@ -29,6 +29,7 @@ function ListCard(props) {
     const [isChecked, setIsChecked] = useState(false);
 
     async function handleLoadList(event, id) {
+        event.stopPropagation();
         if(event.detail === 2) 
             return handleToggleEdit(event);
         console.log("handleLoadList for " + id);
@@ -40,8 +41,16 @@ function ListCard(props) {
             console.log("load " + event.target.id);
 
             // CHANGE THE CURRENT LIST
+            // COULD MAKE A STORE REDUCER CLASS CALLED store.playingList
             store.setCurrentList(id);
-            store.increaseListens(id);
+            console.log('CHECKING ALL PROPS TO INCREASE LISTENS');
+            console.log(selected);
+            console.log(idNamePair.ownerUserName);
+            console.log(auth.user.userName);
+            console.log(published);
+            // if(selected && published && !isChecked)
+            //     store.increaseListens(id);
+            // AFTER ATTEMPTING RENAME SEARCH IF SAME NAME ALREADY USED THEN ERROR MODAL
             console.log(`CURRENT LIST`);
             console.log(store.currentList);
         }
@@ -85,6 +94,7 @@ function ListCard(props) {
         console.log(store.idNamePairs);
         console.log(`ID CURRENT:`);
         console.log(idNamePair);
+        //store.publishList().then(() => {another functrion} );
         setIsChecked(isChecked => !isChecked);
     }
 
@@ -93,6 +103,7 @@ function ListCard(props) {
         store.closeCurrentList();
         console.log(`CLOSED LIST`);
         console.log(store.currentList);
+        setIsChecked(isChecked => !isChecked);
     }
 
     function handleAddNewSong(event) {
@@ -113,7 +124,6 @@ function ListCard(props) {
         console.log(store.currentList);
         console.log(idNamePair._id);
         store.publishList();
-        //store.publishList().then(() => {another functrion} );
     }
     function handleDuplicate(event) {
         event.stopPropagation();

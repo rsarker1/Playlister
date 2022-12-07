@@ -81,7 +81,7 @@ const HomeScreen = () => {
     let listCard = "";
     if (store) {
         if(store.currentList != null) 
-            store.idNamePairs.forEach((pair) => { pair.selected = pair._id === store.currentList._id });
+            store.idNamePairs.forEach((pair) => { pair.selected = (pair._id === store.currentList._id) });
         console.log('CHECKING IDNAMEPAIRS');
         console.log(store.idNamePairs);
         listCard = 
