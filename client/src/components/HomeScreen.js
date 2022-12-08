@@ -287,6 +287,11 @@ const HomeScreen = () => {
         }
     }
 
+    // SORTING
+    function pickSort(specify) {
+        store.sortPlaylists(specify);
+    }
+
 
     // THERE IS MORE TO THIS PART FOR SEARCHES AND GUEST
     let bottom = ""; 
@@ -389,11 +394,11 @@ const HomeScreen = () => {
                     },  
                  }} 
             >
-                <MenuItem onClick={() => console.log("Name (A - Z)")} sx={{ fontSize: "1.2vmin" }}>Name (A - Z)</MenuItem>
-                <MenuItem onClick={() => console.log("Publish Date (Newest)")} sx={{ fontSize: "1.2vmin" }}>Publish Date (Newest)</MenuItem>
-                <MenuItem onClick={() => console.log("Listens (High - Low)")} sx={{ fontSize: "1.2vmin" }}>Listens (High - Low)</MenuItem>
-                <MenuItem onClick={() => console.log("Likes (High - Low)")} sx={{ fontSize: "1.2vmin" }}>Likes (High - Low)</MenuItem>
-                <MenuItem onClick={() => console.log("Dislikes (High - Low)")} sx={{ fontSize: "1.2vmin" }}>Dislikes (High - Low)</MenuItem>
+                <MenuItem onClick={() => { pickSort("alphabetical") }} sx={{ fontSize: "1.2vmin" }}>Name (A - Z)</MenuItem>
+                <MenuItem onClick={() => { pickSort("publishDate") }} sx={{ fontSize: "1.2vmin" }}>Publish Date (Newest)</MenuItem>
+                <MenuItem onClick={() => { pickSort("listens") }} sx={{ fontSize: "1.2vmin" }}>Listens (High - Low)</MenuItem>
+                <MenuItem onClick={() => { pickSort("likes") }} sx={{ fontSize: "1.2vmin" }}>Likes (High - Low)</MenuItem>
+                <MenuItem onClick={() => { pickSort("dislikes") }} sx={{ fontSize: "1.2vmin" }}>Dislikes (High - Low)</MenuItem>
             </Menu>
             <Box sx={{ display: 'flex', height: '85%' }}>
                 <Box sx={{

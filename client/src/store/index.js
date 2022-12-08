@@ -809,6 +809,39 @@ function GlobalStoreContextProvider(props) {
         // }
         // asyncIncreaseListens(id);
     }
+    store.sortPlaylists = function(sortType) {
+        switch(sortType) {
+            case "alphabetical":
+                store.idNamePairs.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case "publishDate":
+                store.idNamePairs.sort((a, b) => {
+                    if (a.published && b.published) {
+                        return Date.parse(b.publishedDate) - Date.parse(a.publishedDate)
+                    }
+                    if (a.published) {
+                        return -1
+                    } 
+                    else return 1
+                })
+                break;
+            case "listens":
+                store.idNamePairs.sort((a, b) => b.listens - a.listens)
+                break;
+            case "likes":
+                store.idNamePairs.sort((a, b) => b.likes - a.likes)
+                break;
+            case "dislikes":
+                store.idNamePairs.sort((a,b) => b.dislikes - a.dislikes)
+                break;
+            default:
+                break;
+        }
+        storeReducer({
+            type:GlobalStoreActionType.SET_CURRENT_LIST,
+            payload: store.currentList,
+        });
+    }
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
     store.setIsListNameEditActive = function () {
