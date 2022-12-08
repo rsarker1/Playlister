@@ -44,6 +44,8 @@ function ListCard(props) {
             // COULD MAKE A STORE REDUCER CLASS CALLED store.playingList
             // AFTER ATTEMPTING RENAME SEARCH IF SAME NAME ALREADY USED THEN ERROR MODAL
             //store.publishList().then(() => {another functrion} );
+            
+            //store.setPlayerList(idNamePair);
             store.setCurrentList(id);
             console.log('ERROR WITH PLAYER HERE?');
             console.log(selected);

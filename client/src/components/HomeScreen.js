@@ -405,7 +405,6 @@ const HomeScreen = () => {
                         ml: "1%",
                         flexDirection: 'column',
                         flexGrow: 1,
-                        //backgroundColor: 'white',
                         overflowY: 'scroll',
                         overflowX: 'hidden'
                     }}>
