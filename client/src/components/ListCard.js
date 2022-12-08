@@ -45,6 +45,10 @@ function ListCard(props) {
             // AFTER ATTEMPTING RENAME SEARCH IF SAME NAME ALREADY USED THEN ERROR MODAL
             //store.publishList().then(() => {another functrion} );
             store.setCurrentList(id);
+            console.log('ERROR WITH PLAYER HERE?');
+            console.log(selected);
+            console.log(published);
+            console.log(!isChecked);
             if(selected && published && !isChecked)
                 store.increaseListens(id);
         }
@@ -110,7 +114,6 @@ function ListCard(props) {
         console.log(store.currentList);
         console.log(idNamePair._id);
         store.publishList();
-        //store.loadIdNamePairs();
     }
     function handleDuplicate(event) {
         event.stopPropagation();
@@ -118,7 +121,6 @@ function ListCard(props) {
     }
     function handleLike(event) {
         event.stopPropagation();
-        console.log('LIKE ENGAGED');
         store.addLike(idNamePair._id, auth.user.userName);
     }
     function handleDislike(event) {

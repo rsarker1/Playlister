@@ -565,77 +565,76 @@ function GlobalStoreContextProvider(props) {
         return (store.currentList !== null);
     }
     store.addLike = function(id, userName) {
-        // let index = null;
-        // for (let i = 0; i < store.idNamePairs.length; i++) {
-        //     if(store.idNamePairs[i]._id === id) {
-        //         if(store.idNamePairs[i].likes.indexOf(userName) > -1) 
-        //             break;
-        //         if(store.idNamePairs[i].dislikes.indexOf(userName) > -1) 
-        //             store.idNamePairs[i].dislikes.splice(store.idNamePairs[i].dislikes.indexOf(userName), 1);
-        //         store.idNamePairs[i].likes.push(userName);
-        //         index = i;
-        //         break;
-        //     }
-        // }
-        // if(index != null) 
-        //     store.updateList(id, store.idNamePairs[index]);
-
-
-
-
-        // if (response.data.success) {
-        //     response = await api.getPlaylistPairs()
-        //     if (response.data.success) {
-        //         let pairsArray = response.data.idNamePairs;
-        //         storeReducer({
-        //             type: GlobalStoreActionType.CHANGE_LIST_NAME,
-        //             payload: {
-        //                 idNamePairs: pairsArray,
-        //                 playlist: playlist
-        //             }
-        //         })
-        //         store.loadIdNamePairs();
-        //     }
-        // };
-        async function asyncAddLike(id) {
-            let response = await api.getPlaylistById(id);
-            if (response.data.success) {
-                let playlist = response.data.playlist;
-                if(playlist.likes.indexOf(userName) > -1) 
-                    return;
-                if(playlist.dislikes.indexOf(userName) > -1) 
-                    playlist.dislikes.splice(playlist.dislikes.indexOf(userName), 1);
-                playlist.likes.push(userName);
-                async function updateList(playlist) {
-                    response = await api.updatePlaylistById(playlist._id, playlist);
-                    if (response.data.success) {
-                        storeReducer({
-                            type: GlobalStoreActionType.SET_CURRENT_LIST,
-                            payload: store.currentList
-                        });
-                    }
-                }
-                updateList(playlist);
+        let index = null;
+        for (let i = 0; i < store.idNamePairs.length; i++) {
+            if(store.idNamePairs[i]._id === id) {
+                if(store.idNamePairs[i].likes.indexOf(userName) > -1) 
+                    break;
+                if(store.idNamePairs[i].dislikes.indexOf(userName) > -1) 
+                    store.idNamePairs[i].dislikes.splice(store.idNamePairs[i].dislikes.indexOf(userName), 1);
+                store.idNamePairs[i].likes.push(userName);
+                index = i;
+                break;
             }
         }
-        asyncAddLike(id);
-        
-        // store.updateList = function(id, list) {
-        //     async function asyncUpdateList() {
-        //         const response = await api.updatePlaylistById(id, list);
+        if(index != null) 
+            store.updateListViaFrontEnd(id, store.idNamePairs[index]);
+
+
+        // async function asyncAddLike(id, userName) {
+        //     let response = await api.getPlaylistById(id);
+        //     if (response.data.success) {
+        //         let playlist = response.data.playlist;
+        //         if(playlist.likes.indexOf(userName) > -1) 
+        //             return;
+        //         if(playlist.dislikes.indexOf(userName) > -1) 
+        //             playlist.dislikes.splice(playlist.dislikes.indexOf(userName), 1);
+        //         playlist.likes.push(userName);
+        //         response = await api.updatePlaylistById(playlist._id, playlist);
         //         if (response.data.success) {
-        //             storeReducer({
-        //                 type: GlobalStoreActionType.SET_CURRENT_LIST,
-        //                 payload: store.currentList
-        //             });
+        //             response = await api.getPlaylistPairs()
+        //             if (response.data.success) {
+        //                 let pairsArray = response.data.idNamePairs;
+        //                 storeReducer({
+        //                     type: GlobalStoreActionType.CHANGE_LIST_NAME,
+        //                     payload: {
+        //                         idNamePairs: pairsArray,
+        //                         playlist: playlist
+        //                     }
+        //                 })
+        //             }
         //         }
-        //         else 
-        //             console.log("FAIL TO UPDATE");
         //     }
-        //     asyncUpdateList();
         // }
+        // asyncAddLike(id, userName);
     }
     store.addDislike = function(id, userName) {
+        // async function asyncDisLike(id, userName) {
+        //     let response = await api.getPlaylistById(id);
+        //     if (response.data.success) {
+        //         let playlist = response.data.playlist;
+        //         if(playlist.dislikes.indexOf(userName) > -1) 
+        //             return;
+        //         if(playlist.likes.indexOf(userName) > -1)
+        //             playlist.likes.splice(playlist.likes.indexOf(userName), 1);
+        //         playlist.dislikes.push(userName);
+        //         response = await api.updatePlaylistById(playlist._id, playlist);
+        //         if (response.data.success) {
+        //             response = await api.getPlaylistPairs()
+        //             if (response.data.success) {
+        //                 let pairsArray = response.data.idNamePairs;
+        //                 storeReducer({
+        //                     type: GlobalStoreActionType.CHANGE_LIST_NAME,
+        //                     payload: {
+        //                         idNamePairs: pairsArray,
+        //                         playlist: playlist
+        //                     }
+        //                 })
+        //             }
+        //         }
+        //     }
+        // }
+        // asyncDisLike(id, userName);
         let index = null;
         for (let i = 0; i < store.idNamePairs.length; i++) {
             if(store.idNamePairs[i]._id === id) {
@@ -649,7 +648,19 @@ function GlobalStoreContextProvider(props) {
             }
         }
         if(index != null) 
-            store.updateList(id, store.idNamePairs[index]);
+            store.updateListViaFrontEnd(id, store.idNamePairs[index]);
+    }
+    store.updateListViaFrontEnd = function(id, list) {
+        async function asyncUpdateList() {
+            const response = await api.updatePlaylistById(id, list);
+            if (response.data.success) {
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: store.currentList
+                });
+            }
+        }
+        asyncUpdateList();
     }
     store.publishList = function() {
         async function asyncPublishList() {
@@ -771,13 +782,32 @@ function GlobalStoreContextProvider(props) {
                 break;
             }
         }
-        async function asyncWait() {
-            if(index != null) {
-                const response = await api.updatePlaylistById(id, store.idNamePairs[index]);
-            }
-        }
-        if(!auth.isGuest) 
-            asyncWait();
+        // async function asyncWait() {
+        //     if(index != null) {
+        //         const response = await api.updatePlaylistById(id, store.idNamePairs[index]);
+        //     }
+        // }
+        // asyncWait();
+        if(index != null) 
+            store.updateListViaFrontEnd(id, store.idNamePairs[index]);
+        
+        // async function asyncIncreaseListens(id) {
+        //     let response = await api.getPlaylistById(id);
+        //     if (response.data.success) {
+        //         let playlist = response.data.playlist;
+        //         playlist.listens++;
+        //         response = await api.updatePlaylistById(playlist._id, playlist);
+        //         if (response.data.success) {
+        //             storeReducer({
+        //                 type: GlobalStoreActionType.SET_CURRENT_LIST,
+        //                 payload: {
+        //                     playlist: store.currentList
+        //                 }
+        //             });
+        //         }
+        //     }
+        // }
+        // asyncIncreaseListens(id);
     }
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
