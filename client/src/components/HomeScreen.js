@@ -42,13 +42,12 @@ const HomeScreen = () => {
 
     const [playerReveal, setPlayerReveal] = useState(true);
     const [commentsReveal, setCommentsReveal] = useState(false);
-    //store.showAllUserView();
+
     useEffect(() => {
-        if(auth.isGuest) 
-            console.log();
-        else {
+        if (auth.isGuest) 
+            store.loadPPUsers();
+        else 
             store.loadIdNamePairs();
-        }
     }, []);
 
 
@@ -331,7 +330,7 @@ const HomeScreen = () => {
             }}>
                 <HomeOutlined sx={{ fontSize: "3.5vmin"}} />
             </IconButton>
-            <IconButton onFocus={() => setFocus("group")} disabled={auth.isGuest} onClick={handleAll} sx={{ 
+            <IconButton onFocus={() => setFocus("group")} onClick={handleAll} sx={{ 
                 border: '2px solid transparent', 
                 color: "white", 
                 mt: "0.2%", 
@@ -340,7 +339,7 @@ const HomeScreen = () => {
             }}>
                 <GroupsOutlined sx={{ fontSize: "3.5vmin" }} />
             </IconButton>            
-            <IconButton onFocus={() => setFocus("user")} disabled={auth.isGuest} onClick={handleUsers} sx={{ 
+            <IconButton onFocus={() => setFocus("user")} onClick={handleUsers} sx={{ 
                 border: '2px solid transparent', 
                 color: "white", 
                 mt: "0.2%", 
