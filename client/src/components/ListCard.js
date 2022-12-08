@@ -30,7 +30,7 @@ function ListCard(props) {
 
     async function handleLoadList(event, id) {
         event.stopPropagation();
-        if(event.detail === 2) 
+        if(event.detail === 2 && !published) 
             return handleToggleEdit(event);
         console.log("handleLoadList for " + id);
         if (!event.target.disabled) {
@@ -49,6 +49,7 @@ function ListCard(props) {
                 store.setCurrentList(id);
             else
                 store.setPlayerList(idNamePair);
+            //store.setCurrentList(id);
             console.log('ERROR WITH PLAYER HERE?');
             console.log(selected);
             console.log(published);
