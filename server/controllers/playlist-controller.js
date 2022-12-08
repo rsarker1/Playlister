@@ -164,27 +164,6 @@ getPlaylists = async (req, res) => {
         return res.status(200).json({ success: true, data: playlists })
     }).catch(err => console.log(err))
 }
-// getPPPairsBySelf = async(req, res) => {
-//     async function findPPBySelf(string) {
-//         await Playlist.find({ isPublished: true}, (err, playlists) => {
-//             if(err) {
-//                 console.log("CAN'T FIND PUBLISHED PAIRS");
-//                 return res.status(400).json({success: false, error: err});
-//             }
-//             if(!playlists) {
-//                 console.log("NO PUBLISHED PAIRS FOUND")
-//                 return res.status(404).json({success: false, error: "Playlists not found"})
-//             }
-//             else {
-//                 console.log('SEARCHING SELF');
-//                 console.log(playlists);
-//                 let matched = playlists.filter((match) => (match.name === string))
-//                 return res.status(200).json({ success: true, idNamePairs: matched })
-//             }
-//         }).catch(err => console.log(err))
-//     }
-//     findPPBySelf(req.params.string);
-// }
 getPPPairs = async (req, res) => {
     async function findPPPairs(){
         await Playlist.find({ isPublished: true }, (err, playlists) => {
@@ -316,6 +295,49 @@ updatePlaylist = async (req, res) => {
         asyncFindUser(playlist);
     })
 }
+
+addCommentToList = async (req, res) => {
+    const body = req.body
+    console.log("updatePlaylist: " + JSON.stringify(body));
+    console.log("req.body.name: " + req.body.name);
+
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
+
+    Playlist.findOne({ _id: req.params.id }, (err, playlist) => {
+        console.log("playlist found: " + JSON.stringify(playlist));
+        if (err) {
+            return res.status(404).json({
+                err,
+                message: 'Playlist not found!',
+            })
+        }
+        console.log(req.body.comment);
+        playlist.comments.push(req.body.comment);
+
+        playlist.save()
+        .then(() => {
+            console.log("SUCCESS");
+            return res.status(200).json({
+                success: true,
+                id: playlist._id,
+                message: 'Playlist updated!',
+            })
+        })
+        .catch(error => {
+            console.log("FAILURE" + JSON.stringify(error));
+            return res.status(404).json({
+                error,
+                message: 'Playlist not updated!',
+            })
+        })      
+    })
+}
+
 module.exports = {
     createPlaylist,
     deletePlaylist,
@@ -325,5 +347,6 @@ module.exports = {
     getPPPairs,
     getPPPairsByListname,
     getPPPairsByUsername,
-    updatePlaylist
+    updatePlaylist,
+    addCommentToList
 }

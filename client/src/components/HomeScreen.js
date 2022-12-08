@@ -237,7 +237,7 @@ const HomeScreen = () => {
     let comments_box = "";
 
     function handleSubmitComment(event) {
-        if (event.code === "Enter") {
+        if(event.code === "Enter") {
             store.addCommentToPlaylist(auth.user.userName, comment_text);
             setComment("");
         }

@@ -443,17 +443,17 @@ function GlobalStoreContextProvider(props) {
         }
         asyncSetCurrentList(id);
     }
-    // store.setPlayerList = function(playlist) {
-    //     console.log('PLAYER GOT SET');
-    //     console.log(playlist);
-    //     storeReducer({
-    //         type: GlobalStoreActionType.SET_PLAYER_LIST,
-    //         payload: playlist
-    //     });
-    //     console.log('PLAYER GOT SET');
-    //     console.log(store.youtubeList);
-    //     store.loadIdNamePairs()
-    // }
+    store.setPlayerList = function(playlist) {
+        console.log('PLAYER GOT SET');
+        console.log(playlist);
+        storeReducer({
+            type: GlobalStoreActionType.SET_PLAYER_LIST,
+            payload: playlist
+        });
+        console.log('PLAYER GOT SET');
+        console.log(store.currentList);
+        //store.loadIdNamePairs()
+    }
 
     store.getPlaylistSize = function() {
         return store.currentList.songs.length;
@@ -831,6 +831,21 @@ function GlobalStoreContextProvider(props) {
         //     }
         // }
         // asyncIncreaseListens(id);
+    }
+    store.addCommentToPlaylist = function(owner, content) {
+        async function asyncAddComment() {
+            let comment = {author: owner, text: content}
+            store.currentList.comments.push(comment);
+            let response = await api.addCommentToList(store.currentList._id, comment)
+            if (response.data.success) {
+                let playlist = response.data.playlist;
+                storeReducer({
+                    type:GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: store.currentList,
+                });
+            }
+        }
+        asyncAddComment();
     }
     store.sortPlaylists = function(sortType) {
         switch(sortType) {

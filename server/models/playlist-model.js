@@ -27,3 +27,8 @@ const playlistSchema = new Schema(
 )
 
 module.exports = mongoose.model('Playlist', playlistSchema)
+// comments: [{
+//     author : String,
+//     text : String,
+//     required: true
+// }],
