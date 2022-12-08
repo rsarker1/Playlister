@@ -194,11 +194,12 @@ getPPPairs = async (req, res) => {
             }
             if(!playlists) {
                 console.log("NO PUBLISHED PAIRS FOUND");
-                return res.status(404).json({success: false, error: "playlists not found"})
+                return res.status(404).json({success: false, error: "Playlists not found"})
             }
-            else 
+            else {
+                console.log('GET PUBLISHED PLAYLISTS');
                 return res.status(200).json({ success: true, idNamePairs: playlists });
-            
+            }
         }).catch(err => console.log(err))
     }
     findPPPairs();
@@ -207,20 +208,21 @@ getPPPairs = async (req, res) => {
 
 getPPPairsByListname = async(req, res) => {
     async function findPPPairsByListname(name){
-        await Playlist.find({ isPublished: true }, (err, playlists) => {
-            if(err) {
-                console.log("CAN'T FIND PUBLISHED PAIRS");
-                return res.status(400).json({success: false, error: err});
-            }
-            if(!playlists) {
-                console.log("NO PUBLISHED PAIRS FOUND")
-                return res.status(404).json({success: false, error: "Playlists not found"})
-            }
-            else {
-                console.log(playlists);
-                let matched = playlists.filter((match) => (match.name === name))
-                return res.status(200).json({ success: true, idNamePairs: matched })
-            }
+            await Playlist.find({ isPublished: true }, (err, playlists) => {
+                if(err) {
+                    console.log("CAN'T FIND PUBLISHED PAIRS");
+                    return res.status(400).json({success: false, error: err});
+                }
+                if(!playlists) {
+                    console.log("NO PUBLISHED PAIRS FOUND");
+                    return res.status(404).json({success: false, error: "Playlists not found"})
+                }
+                else {
+                    console.log('DO THE FILTER THING');
+                    let matched = playlists.filter((match) => (match.name.includes(name)))
+                    console.log(matched);
+                    return res.status(200).json({ success: true, idNamePairs: matched })
+                }
         }).catch(err => console.log(err))
     }
     findPPPairsByListname(req.params.name);
@@ -241,7 +243,8 @@ getPPPairsByUsername = async(req, res) => {
                 return res.status(404).json({success: false, error: "Username not provided"})
             }
             else {
-                let matched = playlists.filter((match) => (match.userName === userName))
+                console.log('USERNAME GET?');
+                let matched = playlists.filter((match) => (match.ownerUserName.includes(userName)))
                 return res.status(200).json({ success: true, idNamePairs: matched })
             }
         }).catch(err => console.log(err))

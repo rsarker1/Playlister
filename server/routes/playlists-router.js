@@ -15,7 +15,7 @@ router.get('/playlist/:id', auth.verify, PlaylistController.getPlaylistById)
 router.get('/playlistpairs', auth.verify, PlaylistController.getPlaylistPairs)
 router.get('/playlists', auth.verify, PlaylistController.getPlaylists)
 router.put('/playlist/:id', auth.verify, PlaylistController.updatePlaylist)
-router.get('/publishedpairs/:string', auth.verify,  PlaylistController.getPPPairs)
+router.get('/publishedpairs/', auth.verify,  PlaylistController.getPPPairs)
 router.get('/publishedpairs/:name', auth.verify, PlaylistController.getPPPairsByListname)
 router.get('/publishedpairs/name/:userName', auth.verify,  PlaylistController.getPPPairsByUsername)
 

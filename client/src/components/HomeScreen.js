@@ -63,14 +63,14 @@ const HomeScreen = () => {
         store.createNewList();
     }
     function handleSelf() {
-        store.showSelfView();
+        store.loadIdNamePairs();
     }
     function handleAll() {
-        console.log('ATTEMPT TO SHOW ALL');
-        store.showAllView();
+        store.loadPP();
     }
     function handleUsers() {
-        store.showUsersView();
+        console.log('ATTEMPT TO SHOW ALL USERS');
+        store.loadPPUsers();
     }
     function handleKeyPress(event) {
         if (event.code === "Enter") 

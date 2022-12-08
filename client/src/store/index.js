@@ -237,52 +237,6 @@ function GlobalStoreContextProvider(props) {
                     currentState: store.currentState,
                 });
             }
-            case GlobalStoreActionType.SHOW_SELF: {
-                return setStore({
-                    currentModal : store.currentModal,
-                    publishedPairs: store.publishedPairs,
-                    idNamePairs: store.idNamePairs,
-                    currentList: store.currentList,
-                    currentSongIndex: store.currentSongIndex,
-                    currentSong: store.currentSong,
-                    newListCounter: store.newListCounter,
-                    listNameActive: store.listNameActive,
-                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
-                    listMarkedForDeletion: store.listMarkedForDeletion,
-                    currentState: CurrentState.SELF_USER,
-                })
-            }
-            case GlobalStoreActionType.SHOW_ALL: {
-                return setStore({
-                    currentModal : store.currentModal,
-                    publishedPairs: store.publishedPairs,
-                    idNamePairs: store.idNamePairs,
-                    currentList: store.currentList,
-                    currentSongIndex: store.currentSongIndex,
-                    currentSong: store.currentSong,
-                    newListCounter: store.newListCounter,
-                    listNameActive: store.listNameActive,
-                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
-                    listMarkedForDeletion: store.listMarkedForDeletion,
-                    currentState: CurrentState.ALL,
-                })
-
-            }
-            case GlobalStoreActionType.SHOW_USERS: {
-                return setStore({
-                    currentModal : store.currentModal,
-                    publishedPairs: store.publishedPairs,
-                    idNamePairs: [],
-                    currentList: null,
-                    currentSongIndex: store.currentSongIndex,
-                    currentSong: store.currentSong,
-                    newListCounter: store.newListCounter,
-                    listNameActive: store.listNameActive,
-                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
-                    listMarkedForDeletion: store.listMarkedForDeletion,
-                    currentState: CurrentState.USERS,
-                })
-            }
             default:
                 return store;
         }
@@ -625,6 +579,24 @@ function GlobalStoreContextProvider(props) {
         // }
         // if(index != null) 
         //     store.updateList(id, store.idNamePairs[index]);
+
+
+
+
+        // if (response.data.success) {
+        //     response = await api.getPlaylistPairs()
+        //     if (response.data.success) {
+        //         let pairsArray = response.data.idNamePairs;
+        //         storeReducer({
+        //             type: GlobalStoreActionType.CHANGE_LIST_NAME,
+        //             payload: {
+        //                 idNamePairs: pairsArray,
+        //                 playlist: playlist
+        //             }
+        //         })
+        //         store.loadIdNamePairs();
+        //     }
+        // };
         async function asyncAddLike(id) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
@@ -720,26 +692,6 @@ function GlobalStoreContextProvider(props) {
         }
         asyncDuplicateList();
     } 
-    store.showSelfView = function() {
-        store.loadIdNamePairs();
-        storeReducer({
-            type: GlobalStoreActionType.SHOW_SELF,
-            payload: null
-        })
-    }
-    store.showAllView = function() {
-        store.loadPP();
-        storeReducer({
-            type: GlobalStoreActionType.SHOW_ALL,
-            payload: null
-        })
-    }
-    store.showUsersView = function() {
-        storeReducer({
-            type: GlobalStoreActionType.SHFOW_USERS,
-            payload: null
-        })
-    }
     store.loadPP = function() {
         async function asyncLoadPP() {
             const response = await api.getPPPairs();
@@ -749,7 +701,22 @@ function GlobalStoreContextProvider(props) {
                 console.log(pairsArray);
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                    payload: {pairs: pairsArray, state: CurrentState.SELF_USER}
+                    payload: {pairs: pairsArray, state: CurrentState.ALL}
+                });
+            }
+        }
+        asyncLoadPP();
+    }
+    store.loadPPUsers = function() {
+        async function asyncLoadPP() {
+            const response = await api.getPPPairs();
+            if(response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                console.log('PUBLISHED PAIRS RESPONSE:');
+                console.log(pairsArray);
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: {pairs: pairsArray, state: CurrentState.USERS}
                 });
             }
         }
@@ -761,6 +728,7 @@ function GlobalStoreContextProvider(props) {
             const response = await api.getPPPairsByListname(name);
             if(response.data.success) {
                 let pairsArray = response.data.idNamePairs;
+                console.log(pairsArray);
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                     payload: {pairs: pairsArray, state: CurrentState.ALL}
