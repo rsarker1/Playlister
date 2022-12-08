@@ -42,17 +42,11 @@ function ListCard(props) {
 
             // CHANGE THE CURRENT LIST
             // COULD MAKE A STORE REDUCER CLASS CALLED store.playingList
-            store.setCurrentList(id);
-            console.log('CHECKING ALL PROPS TO INCREASE LISTENS');
-            console.log(selected);
-            console.log(idNamePair.ownerUserName);
-            console.log(auth.user.userName);
-            console.log(published);
-            // if(selected && published && !isChecked)
-            //     store.increaseListens(id);
             // AFTER ATTEMPTING RENAME SEARCH IF SAME NAME ALREADY USED THEN ERROR MODAL
-            console.log(`CURRENT LIST`);
-            console.log(store.currentList);
+            //store.publishList().then(() => {another functrion} );
+            store.setCurrentList(id);
+            if(selected && published && !isChecked)
+                store.increaseListens(id);
         }
     }
     function handleToggleEdit(event) {
@@ -86,15 +80,7 @@ function ListCard(props) {
 
     async function handleCollapse(event, id) {
         event.stopPropagation();
-        handleLoadList(event, id);
-        console.log(`CURRENT ID: ${id}`);
-        console.log(`CURRENT LIST`);
-        console.log(store.currentList);
-        console.log(`ID NAME PAIRS`);
-        console.log(store.idNamePairs);
-        console.log(`ID CURRENT:`);
-        console.log(idNamePair);
-        //store.publishList().then(() => {another functrion} );
+        store.setCurrentList(id);
         setIsChecked(isChecked => !isChecked);
     }
 
@@ -124,6 +110,7 @@ function ListCard(props) {
         console.log(store.currentList);
         console.log(idNamePair._id);
         store.publishList();
+        //store.loadIdNamePairs();
     }
     function handleDuplicate(event) {
         event.stopPropagation();
@@ -131,6 +118,7 @@ function ListCard(props) {
     }
     function handleLike(event) {
         event.stopPropagation();
+        console.log('LIKE ENGAGED');
         store.addLike(idNamePair._id, auth.user.userName);
     }
     function handleDislike(event) {

@@ -42,12 +42,13 @@ const HomeScreen = () => {
 
     const [playerReveal, setPlayerReveal] = useState(true);
     const [commentsReveal, setCommentsReveal] = useState(false);
-
+    //store.showAllUserView();
     useEffect(() => {
         if(auth.isGuest) 
             console.log();
-        else 
+        else {
             store.loadIdNamePairs();
+        }
     }, []);
 
 
@@ -65,6 +66,7 @@ const HomeScreen = () => {
         store.showSelfView();
     }
     function handleAll() {
+        console.log('ATTEMPT TO SHOW ALL');
         store.showAllView();
     }
     function handleUsers() {

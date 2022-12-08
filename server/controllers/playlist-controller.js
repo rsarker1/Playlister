@@ -164,30 +164,50 @@ getPlaylists = async (req, res) => {
         return res.status(200).json({ success: true, data: playlists })
     }).catch(err => console.log(err))
 }
-getPPPairsBySelf = async(req, res) => {
-    async function findPPBySelf(string) {
-        await Playlist.find({ isPublished: true}, (err, playlists) => {
+// getPPPairsBySelf = async(req, res) => {
+//     async function findPPBySelf(string) {
+//         await Playlist.find({ isPublished: true}, (err, playlists) => {
+//             if(err) {
+//                 console.log("CAN'T FIND PUBLISHED PAIRS");
+//                 return res.status(400).json({success: false, error: err});
+//             }
+//             if(!playlists) {
+//                 console.log("NO PUBLISHED PAIRS FOUND")
+//                 return res.status(404).json({success: false, error: "Playlists not found"})
+//             }
+//             else {
+//                 console.log('SEARCHING SELF');
+//                 console.log(playlists);
+//                 let matched = playlists.filter((match) => (match.name === string))
+//                 return res.status(200).json({ success: true, idNamePairs: matched })
+//             }
+//         }).catch(err => console.log(err))
+//     }
+//     findPPBySelf(req.params.string);
+// }
+getPPPairs = async (req, res) => {
+    async function findPPPairs(){
+        await Playlist.find({ isPublished: true }, (err, playlists) => {
             if(err) {
                 console.log("CAN'T FIND PUBLISHED PAIRS");
                 return res.status(400).json({success: false, error: err});
             }
             if(!playlists) {
-                console.log("NO PUBLISHED PAIRS FOUND")
-                return res.status(404).json({success: false, error: "Playlists not found"})
+                console.log("NO PUBLISHED PAIRS FOUND");
+                return res.status(404).json({success: false, error: "playlists not found"})
             }
-            else {
-                console.log('SEARCHING SELF');
-                console.log(playlists);
-                let matched = playlists.filter((match) => (match.name === string))
-                return res.status(200).json({ success: true, idNamePairs: matched })
-            }
+            else 
+                return res.status(200).json({ success: true, idNamePairs: playlists });
+            
         }).catch(err => console.log(err))
     }
-    findPPBySelf(req.params.string);
+    findPPPairs();
 }
+
+
 getPPPairsByListname = async(req, res) => {
     async function findPPPairsByListname(name){
-        await Playlist.find({ isPublished: true, }, (err, playlists) => {
+        await Playlist.find({ isPublished: true }, (err, playlists) => {
             if(err) {
                 console.log("CAN'T FIND PUBLISHED PAIRS");
                 return res.status(400).json({success: false, error: err});
@@ -207,7 +227,7 @@ getPPPairsByListname = async(req, res) => {
 }
 getPPPairsByUsername = async(req, res) => {
     async function findPPPairsByUsername(userName){
-        await Playlist.find({published: true}, (err, playlists) => {
+        await Playlist.find({ isPublished: true }, (err, playlists) => {
             if(err) {
                 console.log("CAN'T FIND PUBLISHED PAIRS");
                 return res.status(400).json({success: false, error: err});
@@ -299,7 +319,7 @@ module.exports = {
     getPlaylistById,
     getPlaylistPairs,
     getPlaylists,
-    getPPPairsBySelf,
+    getPPPairs,
     getPPPairsByListname,
     getPPPairsByUsername,
     updatePlaylist
